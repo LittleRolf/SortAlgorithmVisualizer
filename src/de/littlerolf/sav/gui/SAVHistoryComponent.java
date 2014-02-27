@@ -17,7 +17,7 @@ public class SAVHistoryComponent extends JComponent {
 
 	private static final long serialVersionUID = 1099284147258735099L;
 
-	private static final int PLAYING_CARD_AMOUNT = 52;
+	public static final int PLAYING_CARD_AMOUNT = 52;
 
 	private BufferedImage[] cardImages;
 	{
