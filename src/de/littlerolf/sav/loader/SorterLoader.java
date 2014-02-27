@@ -6,7 +6,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import de.littlerolf.sav.data.BaseSorter;
 
 /**
  * The Main Class of the Loader module, used for loading and accessing the
@@ -21,6 +24,7 @@ public class SorterLoader {
 	private boolean debug = false;
 
 	private List<Class> classes = new ArrayList<Class>();
+	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
 
 	/**
 	 * Creates a new SorterLoader looking for classes in the given path
@@ -83,20 +87,75 @@ public class SorterLoader {
 			}
 		}
 	}
+	
+	public void instanciateAllClasses() {
+		if(classes.size() == 0) {
+			if(debug) {
+				System.out.println("You have to call loadAllClasses() first!");
+			}
+			return;
+		}
+		for(Class c : classes) {
+			try {
+				sorters.add((BaseSorter) c.newInstance());
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public BaseSorter getSorterByName(String name) {
+		for (BaseSorter bs : sorters) {
+			if(bs.getName().equals(name)) {
+				return bs;
+			}
+		}
+		return null;
+	}
+	
+	public String[] getAvailableSorters() {
+		String[] packages = new String[sorters.size()];
+		for (int i = 0; i < sorters.size(); i++) {
+			packages[i] = sorters.get(i).getName();
+		}
+		if (debug) {
+			System.out.println(Arrays.toString(packages));
+		}
+		return packages;
+	}
 
-	public Class getSorterByPackageName(String packageName) {
+	/**
+	 * Gets the Class of a Sorter via the Package name
+	 * 
+	 * @param packageName
+	 *            package name to search for
+	 * @return The found Class or null
+	 */
+	public Class getSorterClassByPackageName(String packageName) {
 		for (Class c : classes) {
 			if (c.getPackage().getName().equals(packageName)) {
+				if (debug) {
+					System.out.println("Found loaded class for package name: "
+							+ packageName);
+				}
 				return c;
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * Returns a full list of all available package names
+	 * 
+	 * @return The list of absolute awesomeness
+	 */
 	public String[] getAvailablePackagesList() {
 		String[] packages = new String[classes.size()];
-		for (int i = 0; i < classes.size() - 1; i++) {
+		for (int i = 0; i < classes.size(); i++) {
 			packages[i] = classes.get(i).getPackage().getName();
+		}
+		if (debug) {
+			System.out.println(Arrays.toString(packages));
 		}
 		return packages;
 	}
