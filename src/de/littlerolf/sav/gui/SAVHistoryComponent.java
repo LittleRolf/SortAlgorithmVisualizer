@@ -20,6 +20,7 @@ public class SAVHistoryComponent extends JComponent {
 	public static final int PLAYING_CARD_AMOUNT = 52;
 
 	private BufferedImage[] cardImages;
+
 	{
 		cardImages = new BufferedImage[PLAYING_CARD_AMOUNT];
 		String[] names = new String[] { "2", "3", "4", "5", "6", "7", "8", "9",
