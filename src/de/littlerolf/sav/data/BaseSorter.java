@@ -8,6 +8,7 @@ public abstract class BaseSorter {
 	private List<HistoryItem> history = new ArrayList<HistoryItem>();
 
 	public abstract int[] sortArray(int[] values);
+	public abstract String getName();
 	
 	public void saveHistory(int values[]) {
 		HistoryItem i = new HistoryItem();
