@@ -38,6 +38,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(comboBox);
 
 		JSlider slider = new JSlider();
+		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
 		slider.setBounds(430, 332, 156, 23);
 		getContentPane().add(slider);
 
@@ -50,6 +51,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblImplementation);
 
 		JLabel lblKontrolle = new JLabel("Kontrolle:");
+		lblKontrolle.setToolTipText("oder auch \"Cockpit\"... h\u00F6h\u00F6, \"Cock\"...");
 		lblKontrolle.setBounds(10, 307, 89, 14);
 		getContentPane().add(lblKontrolle);
 
