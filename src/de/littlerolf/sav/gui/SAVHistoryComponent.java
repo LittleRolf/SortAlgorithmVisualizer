@@ -47,6 +47,19 @@ public class SAVHistoryComponent extends JComponent {
 	}
 
 	private List<HistoryItem> historyItems = new ArrayList<HistoryItem>();
+	private int currentIndex = 0;
+
+	public void nextStep() {
+		currentIndex++;
+		if (currentIndex >= historyItems.size())
+			currentIndex--;
+		repaint();
+	}
+
+	public void reset() {
+		currentIndex = 0;
+		repaint();
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
