@@ -49,6 +49,12 @@ public class SAVHistoryComponent extends JComponent {
 	private List<HistoryItem> historyItems = new ArrayList<HistoryItem>();
 	private int currentIndex = 0;
 
+	public SAVHistoryComponent() {
+		HistoryItem i = new HistoryItem();
+		i.values = new int[] { 4, 50, 42, 3 };
+		getHistoryItems().add(i);
+	}
+
 	public void nextStep() {
 		currentIndex++;
 		if (currentIndex >= historyItems.size())
@@ -64,6 +70,24 @@ public class SAVHistoryComponent extends JComponent {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+
+		HistoryItem currentItem = getHistoryItems().get(currentIndex);
+		if (currentItem == null)
+			return;
+
+		int valueAmount = currentItem.values.length;
+		int width = getWidth();
+		int height = getHeight();
+		int x = 0;
+		for (int value : currentItem.values) {
+			if (value > cardImages.length || value < 0)
+				continue;
+			BufferedImage cardImage = cardImages[value];
+			g.drawImage(cardImage,
+					x + width / 2 - (valueAmount * cardImage.getWidth()) / 2,
+					height / 2 - cardImage.getHeight() / 2, null);
+			x += cardImage.getWidth();
+		}
 	}
 
 	public List<HistoryItem> getHistoryItems() {
