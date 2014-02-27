@@ -92,8 +92,9 @@ public class SAVHistoryComponent extends JComponent {
 				continue;
 
 			BufferedImage cardImage = cardImages[value];
-			g.drawImage(cardImage, width / 4 - cardImage.getWidth() / 4 + i
-					* diff, height / 2 - cardImage.getHeight() / 2 / 2,
+			g.drawImage(cardImage,
+					(width / 4) + (i * diff) - cardImage.getWidth() / 8, height
+							/ 2 - cardImage.getHeight() / 2 / 2,
 					cardImage.getWidth() / 2, cardImage.getHeight() / 2, null);
 			i++;
 		}
