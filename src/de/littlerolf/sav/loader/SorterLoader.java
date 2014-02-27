@@ -20,10 +20,18 @@ public class SorterLoader {
 	
 	private List<Class> classes = new ArrayList<Class>();
 	
+	/**
+	 * Creates a new SorterLoader looking for classes in the given path
+	 * @param path The path to look for classes
+	 */
 	public SorterLoader(String path) {
 		classpath = path;
 		
 	}
+	
+	/**
+	 * Loads all classes named 'Sorter' from the set folder from all the subdirectories
+	 */
 	public void loadAllClasses() {
 		// Create a File object on the root of the directory containing the class file
 		File file = new File(classpath);
@@ -37,6 +45,7 @@ public class SorterLoader {
 		    ClassLoader cl = new URLClassLoader(urls);
 
 		    String[] directories = getSubdirectories();
+		    
 		    
 		    for(String folder : directories) {
 		    	classes.add(cl.loadClass(folder + ".Sorter"));
