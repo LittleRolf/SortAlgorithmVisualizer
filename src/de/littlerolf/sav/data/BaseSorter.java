@@ -12,7 +12,7 @@ public abstract class BaseSorter {
 	
 	public void saveHistory(int values[]) {
 		HistoryItem i = new HistoryItem();
-		i.values = values;
+		i.values = values.clone();
 		history.add(i);
 	}
 	
