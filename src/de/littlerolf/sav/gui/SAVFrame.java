@@ -10,6 +10,7 @@ import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -26,10 +27,20 @@ public class SAVFrame extends JFrame {
 	 */
 	private static final long serialVersionUID = -3474914946760719462L;
 
+	public static final int BENCHMARK_RUNS = 10;
+
 	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
+
 	private JComboBox<String> sorterComboBox;
+	private JLabel lblStepAmount;
+	private JLabel lblCurrentStep;
+	private JLabel lblSpeed;
+
 	private SAVHistoryComponent historyComponent;
 	private int currentSpeed = 1000;
+	private SteppingThread currentSteppingThread;
+
+	private List<JComponent> disableMe = new ArrayList<JComponent>();
 
 	public SAVFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,12 +58,14 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.onStartSimulationButtonPressed();
 			}
 		});
-		btnSimulieren.setBounds(10, 332, 260, 23);
+		btnSimulieren.setBounds(10, 332, 215, 23);
 		getContentPane().add(btnSimulieren);
+		disableMe.add(btnSimulieren);
 
 		sorterComboBox = new JComboBox<String>();
 		sorterComboBox.setBounds(596, 333, 294, 20);
 		getContentPane().add(sorterComboBox);
+		disableMe.add(sorterComboBox);
 
 		JSlider slider = new JSlider();
 		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
@@ -74,30 +87,30 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblKontrolle);
 
 		JLabel lblSchritte = new JLabel("Schritte:");
-		lblSchritte.setBounds(280, 326, 61, 14);
+		lblSchritte.setBounds(266, 326, 75, 14);
 		getContentPane().add(lblSchritte);
 
-		JLabel lblStepAmount = new JLabel("0");
+		lblStepAmount = new JLabel("0");
 		lblStepAmount.setBounds(374, 326, 46, 14);
 		getContentPane().add(lblStepAmount);
 
 		JLabel lblAktuellerSchritte = new JLabel("Aktueller Schritt:");
-		lblAktuellerSchritte.setBounds(280, 312, 89, 14);
+		lblAktuellerSchritte.setBounds(266, 312, 103, 14);
 		getContentPane().add(lblAktuellerSchritte);
 
-		JLabel lblCurrentStep = new JLabel("0");
+		lblCurrentStep = new JLabel("0");
 		lblCurrentStep.setBounds(374, 312, 46, 14);
 		getContentPane().add(lblCurrentStep);
 
 		JLabel lblStatistik = new JLabel("Statistik:");
-		lblStatistik.setBounds(280, 294, 61, 14);
+		lblStatistik.setBounds(266, 294, 75, 14);
 		getContentPane().add(lblStatistik);
 
-		JLabel lblGeschwindigkeit_1 = new JLabel("Geschwindigkeit:");
-		lblGeschwindigkeit_1.setBounds(280, 341, 89, 14);
+		JLabel lblGeschwindigkeit_1 = new JLabel("Ø Geschwindigkeit:");
+		lblGeschwindigkeit_1.setBounds(266, 341, 103, 14);
 		getContentPane().add(lblGeschwindigkeit_1);
 
-		JLabel lblSpeed = new JLabel("42ms");
+		lblSpeed = new JLabel("0µs");
 		lblSpeed.setBounds(374, 341, 46, 14);
 		getContentPane().add(lblSpeed);
 
@@ -111,33 +124,59 @@ public class SAVFrame extends JFrame {
 		JButton btnNew = new JButton("Neu...");
 		btnNew.setBounds(710, 303, 75, 23);
 		getContentPane().add(btnNew);
+		disableMe.add(btnNew);
 
 		JButton btnEdit = new JButton("Bearbeiten...");
 		btnEdit.setBounds(787, 303, 103, 23);
 		getContentPane().add(btnEdit);
+		disableMe.add(btnEdit);
 
 		reloadSorters();
 	}
 
 	private void onStartSimulationButtonPressed() {
 		BaseSorter sorter = sorters.get(this.sorterComboBox.getSelectedIndex());
+		sorter.getHistory().clear();
 
 		int[] testingArray = generateTestingArray();
-		sorter.sortArray(testingArray);
+
+		int[] benchmarkResults = new int[BENCHMARK_RUNS];
+
+		for (int i = 0; i < benchmarkResults.length; i++) {
+			sorter.getHistory().clear();
+			int[] testingArrayReal = testingArray.clone();
+			// Wohoo, sorting!
+			long start = System.nanoTime();
+			sorter.sortArray(testingArrayReal);
+			benchmarkResults[i] = (int) ((System.nanoTime() - start) / 1000);
+		}
+
+		double averageSpeed = 0;
+
+		for (int i = 0; i < benchmarkResults.length; i++)
+			averageSpeed += benchmarkResults[i];
+		averageSpeed /= benchmarkResults.length;
+
+		lblSpeed.setText(averageSpeed + "µs");
 
 		historyComponent.getHistoryItems().clear();
 		historyComponent.getHistoryItems().addAll(sorter.getHistory());
+		historyComponent.reset();
 		System.out.println(sorter.getHistory().size());
 
 		historyComponent.repaint();
 
-		new SteppingThread().start();
+		currentSteppingThread = new SteppingThread();
+		currentSteppingThread.start();
+
+		for (JComponent c : disableMe)
+			c.setEnabled(false);
 	}
 
 	private int[] generateTestingArray() {
 		Random r = new Random();
 
-		int[] values = new int[r.nextInt(20)];
+		int[] values = new int[r.nextInt(15) + 5];
 
 		for (int i = 0; i < values.length; i++)
 			values[i] = r.nextInt(SAVHistoryComponent.PLAYING_CARD_AMOUNT);
@@ -220,6 +259,9 @@ public class SAVFrame extends JFrame {
 	private class SteppingThread extends Thread {
 		@Override
 		public void run() {
+			SAVFrame.this.onSteppingProgress(
+					SAVFrame.this.historyComponent.getCurrentStep(),
+					SAVFrame.this.historyComponent.getHistoryItems().size());
 			while (!SAVFrame.this.historyComponent.isSimulationEndReached()) {
 				try {
 					Thread.sleep(SAVFrame.this.currentSpeed);
@@ -228,8 +270,27 @@ public class SAVFrame extends JFrame {
 				}
 
 				SAVFrame.this.historyComponent.nextStep();
+				SAVFrame.this
+						.onSteppingProgress(SAVFrame.this.historyComponent
+								.getCurrentStep(),
+								SAVFrame.this.historyComponent
+										.getHistoryItems().size());
 			}
+			SAVFrame.this.onSteppingFinished();
 		}
+	}
+
+	private void onSteppingFinished() {
+		currentSteppingThread = null;
+
+		for (JComponent c : disableMe)
+			c.setEnabled(true);
+
+	}
+
+	private void onSteppingProgress(int progress, int max) {
+		lblStepAmount.setText(max + "");
+		lblCurrentStep.setText(progress + 1 + "");
 	}
 
 	public static void main(String[] args) {

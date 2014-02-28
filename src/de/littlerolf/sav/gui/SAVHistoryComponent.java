@@ -53,23 +53,22 @@ public class SAVHistoryComponent extends JComponent {
 	private int currentIndex = 0;
 
 	public SAVHistoryComponent() {
-		HistoryItem i = new HistoryItem();
-		i.values = new int[] { 4, 10, 5, 20, 50, 10, 3, 48 };
-		getHistoryItems().add(i);
 	}
 
 	public void nextStep() {
-
 		currentIndex++;
 		if (currentIndex >= historyItems.size())
 			currentIndex--;
 
-		System.out.println(currentIndex);
 		repaint();
 	}
 
 	public boolean isSimulationEndReached() {
 		return currentIndex >= historyItems.size() - 1;
+	}
+
+	public int getCurrentStep() {
+		return currentIndex;
 	}
 
 	public void reset() {
@@ -86,9 +85,10 @@ public class SAVHistoryComponent extends JComponent {
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-		HistoryItem currentItem = getHistoryItems().get(currentIndex);
-		if (currentItem == null)
+		if (getHistoryItems().isEmpty())
 			return;
+
+		HistoryItem currentItem = getHistoryItems().get(currentIndex);
 
 		int valueAmount = currentItem.values.length;
 		int width = getWidth();
