@@ -2,6 +2,11 @@ package de.littlerolf.sav.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,8 +18,18 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import jsyntaxpane.DefaultSyntaxKit;
+import de.littlerolf.sav.data.BaseSorter;
 
 public class SAVFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3474914946760719462L;
+
+	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
+	private JComboBox<String> sorterComboBox;
+	private SAVHistoryComponent historyComponent;
+
 	public SAVFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
@@ -26,16 +41,17 @@ public class SAVFrame extends JFrame {
 		getContentPane().setLayout(null);
 
 		JButton btnSimulieren = new JButton("Simulieren");
-		btnSimulieren.setBounds(10, 332, 89, 23);
+		btnSimulieren.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SAVFrame.this.onStartSimulationButtonPressed();
+			}
+		});
+		btnSimulieren.setBounds(10, 332, 260, 23);
 		getContentPane().add(btnSimulieren);
 
-		JButton btnAbspielen = new JButton("Abspielen");
-		btnAbspielen.setBounds(109, 332, 89, 23);
-		getContentPane().add(btnAbspielen);
-
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(596, 333, 294, 20);
-		getContentPane().add(comboBox);
+		sorterComboBox = new JComboBox<String>();
+		sorterComboBox.setBounds(596, 333, 294, 20);
+		getContentPane().add(sorterComboBox);
 
 		JSlider slider = new JSlider();
 		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
@@ -51,7 +67,8 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblImplementation);
 
 		JLabel lblKontrolle = new JLabel("Kontrolle:");
-		lblKontrolle.setToolTipText("oder auch \"Cockpit\"... h\u00F6h\u00F6, \"Cock\"...");
+		lblKontrolle
+				.setToolTipText("oder auch \"Cockpit\"... h\u00F6h\u00F6, \"Cock\"...");
 		lblKontrolle.setBounds(10, 307, 89, 14);
 		getContentPane().add(lblKontrolle);
 
@@ -87,7 +104,7 @@ public class SAVFrame extends JFrame {
 		scrollPane.setBounds(10, 11, 880, 272);
 		getContentPane().add(scrollPane);
 
-		SAVHistoryComponent historyComponent = new SAVHistoryComponent();
+		historyComponent = new SAVHistoryComponent();
 		scrollPane.setViewportView(historyComponent);
 
 		JButton btnNew = new JButton("Neu...");
@@ -97,6 +114,103 @@ public class SAVFrame extends JFrame {
 		JButton btnEdit = new JButton("Bearbeiten...");
 		btnEdit.setBounds(787, 303, 103, 23);
 		getContentPane().add(btnEdit);
+
+		reloadSorters();
+	}
+
+	private void onStartSimulationButtonPressed() {
+		BaseSorter sorter = sorters.get(this.sorterComboBox.getSelectedIndex());
+
+		int[] testingArray = generateTestingArray();
+		sorter.sortArray(testingArray);
+
+		historyComponent.getHistoryItems().clear();
+		historyComponent.getHistoryItems().addAll(sorter.getHistory());
+
+		historyComponent.repaint();
+	}
+
+	private int[] generateTestingArray() {
+		Random r = new Random();
+
+		int[] values = new int[r.nextInt(10)];
+
+		for (int i = 0; i < values.length; i++)
+			values[i] = r.nextInt(SAVHistoryComponent.PLAYING_CARD_AMOUNT);
+
+		return values;
+	}
+
+	private void reloadSorters() {
+		this.getSorters().clear();
+		// Temporary test obviously:
+		this.getSorters().add(new BaseSorter() {
+
+			@Override
+			public int[] sortArray(int[] values) {
+				qSort(values, 0, values.length - 1);
+
+				return values;
+			}
+
+			public void qSort(int x[], int links, int rechts) {
+				this.saveHistory(x);
+				if (links < rechts) {
+					int i = partition(x, links, rechts);
+					qSort(x, links, i - 1);
+					qSort(x, i + 1, rechts);
+				}
+			}
+
+			public int partition(int x[], int links, int rechts) {
+				int pivot, i, j, help;
+				pivot = x[rechts];
+				i = links;
+				j = rechts - 1;
+				while (i <= j) {
+					if (x[i] > pivot) {
+						// tausche x[i] und x[j]
+						help = x[i];
+						x[i] = x[j];
+						x[j] = help;
+						j--;
+					} else
+						i++;
+				}
+				// tausche x[i] und x[rechts]
+				help = x[i];
+				x[i] = x[rechts];
+				x[rechts] = help;
+
+				return i;
+			}
+
+			@Override
+			public String getName() {
+				return "Crazy Ulf";
+			}
+
+		});
+		// TODO: implement sorter loading (needs
+		// SorterLoaderManagerDeviceAbstractFlugzeugManager first)
+
+		refreshUI();
+	}
+
+	private void refreshUI() {
+		// Refresh ComboBox
+		this.sorterComboBox.removeAllItems();
+
+		for (BaseSorter sorter : sorters)
+			this.sorterComboBox.addItem(sorter.getName());
+	}
+
+	public List<BaseSorter> getSorters() {
+		return sorters;
+	}
+
+	public void setSorters(List<BaseSorter> sorters) {
+		this.sorters = sorters;
 	}
 
 	public static void main(String[] args) {
@@ -112,9 +226,4 @@ public class SAVFrame extends JFrame {
 		new SAVFrame().setVisible(true);
 		new CodeEditorFrame().setVisible(true);
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3474914946760719462L;
 }
