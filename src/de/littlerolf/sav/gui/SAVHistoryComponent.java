@@ -1,6 +1,8 @@
 package de.littlerolf.sav.gui;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,9 +17,10 @@ public class SAVHistoryComponent extends JComponent {
 
 	private static final long serialVersionUID = 1099284147258735099L;
 
-	private static final int PLAYING_CARD_AMOUNT = 52;
+	public static final int PLAYING_CARD_AMOUNT = 52;
 
 	private BufferedImage[] cardImages;
+
 	{
 		cardImages = new BufferedImage[PLAYING_CARD_AMOUNT];
 		String[] names = new String[] { "2", "3", "4", "5", "6", "7", "8", "9",
@@ -51,7 +54,7 @@ public class SAVHistoryComponent extends JComponent {
 
 	public SAVHistoryComponent() {
 		HistoryItem i = new HistoryItem();
-		i.values = new int[] { 4, 50, 42, 3 };
+		i.values = new int[] { 4, 10, 5, 20, 50, 10, 3, 48 };
 		getHistoryItems().add(i);
 	}
 
@@ -68,8 +71,13 @@ public class SAVHistoryComponent extends JComponent {
 	}
 
 	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+	protected void paintComponent(Graphics g1) {
+		super.paintComponent(g1);
+		Graphics2D g = (Graphics2D) g1;
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
 		HistoryItem currentItem = getHistoryItems().get(currentIndex);
 		if (currentItem == null)
@@ -78,15 +86,18 @@ public class SAVHistoryComponent extends JComponent {
 		int valueAmount = currentItem.values.length;
 		int width = getWidth();
 		int height = getHeight();
-		int x = 0;
+		int i = 0;
+		int diff = width / 2 / valueAmount;
 		for (int value : currentItem.values) {
 			if (value > cardImages.length || value < 0)
 				continue;
+
 			BufferedImage cardImage = cardImages[value];
 			g.drawImage(cardImage,
-					x + width / 2 - (valueAmount * cardImage.getWidth()) / 2,
-					height / 2 - cardImage.getHeight() / 2, null);
-			x += cardImage.getWidth();
+					(width / 4) + (i * diff) - cardImage.getWidth() / 8, height
+							/ 2 - cardImage.getHeight() / 2 / 2,
+					cardImage.getWidth() / 2, cardImage.getHeight() / 2, null);
+			i++;
 		}
 	}
 

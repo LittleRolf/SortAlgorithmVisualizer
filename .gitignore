@@ -1,5 +1,4 @@
 *target*
-*.jar
 *.war
 *.ear
 *.class
@@ -26,3 +25,4 @@ local.properties
 # Locally stored "Eclipse launch configurations"
 *.launch
 
+Thumbs.db

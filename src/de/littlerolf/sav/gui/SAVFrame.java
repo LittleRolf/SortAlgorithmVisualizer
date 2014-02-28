@@ -1,5 +1,8 @@
 package de.littlerolf.sav.gui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -9,12 +12,17 @@ import javax.swing.JSlider;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import jsyntaxpane.DefaultSyntaxKit;
+
 public class SAVFrame extends JFrame {
 	public SAVFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
-		setSize(800, 420);
+		setSize(906, 400);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
+				/ 2 - this.getSize().height / 2);
 		getContentPane().setLayout(null);
 
 		JButton btnSimulieren = new JButton("Simulieren");
@@ -26,23 +34,25 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(btnAbspielen);
 
 		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(596, 333, 178, 20);
+		comboBox.setBounds(596, 333, 294, 20);
 		getContentPane().add(comboBox);
 
 		JSlider slider = new JSlider();
+		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
 		slider.setBounds(430, 332, 156, 23);
 		getContentPane().add(slider);
 
 		JLabel lblGeschwindigkeit = new JLabel("Geschwindigkeit:");
-		lblGeschwindigkeit.setBounds(430, 294, 89, 14);
+		lblGeschwindigkeit.setBounds(430, 307, 89, 14);
 		getContentPane().add(lblGeschwindigkeit);
 
 		JLabel lblImplementation = new JLabel("Implementation:");
-		lblImplementation.setBounds(596, 294, 89, 14);
+		lblImplementation.setBounds(596, 307, 89, 14);
 		getContentPane().add(lblImplementation);
 
 		JLabel lblKontrolle = new JLabel("Kontrolle:");
-		lblKontrolle.setBounds(10, 294, 89, 14);
+		lblKontrolle.setToolTipText("oder auch \"Cockpit\"... h\u00F6h\u00F6, \"Cock\"...");
+		lblKontrolle.setBounds(10, 307, 89, 14);
 		getContentPane().add(lblKontrolle);
 
 		JLabel lblSchritte = new JLabel("Schritte:");
@@ -74,14 +84,24 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblSpeed);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 774, 272);
+		scrollPane.setBounds(10, 11, 880, 272);
 		getContentPane().add(scrollPane);
 
 		SAVHistoryComponent historyComponent = new SAVHistoryComponent();
 		scrollPane.setViewportView(historyComponent);
+
+		JButton btnNew = new JButton("Neu...");
+		btnNew.setBounds(710, 303, 75, 23);
+		getContentPane().add(btnNew);
+
+		JButton btnEdit = new JButton("Bearbeiten...");
+		btnEdit.setBounds(787, 303, 103, 23);
+		getContentPane().add(btnEdit);
 	}
 
 	public static void main(String[] args) {
+		DefaultSyntaxKit.initKit();
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException e) {
@@ -90,6 +110,7 @@ public class SAVFrame extends JFrame {
 		} catch (IllegalAccessException e) {
 		}
 		new SAVFrame().setVisible(true);
+		new CodeEditorFrame().setVisible(true);
 	}
 
 	/**
