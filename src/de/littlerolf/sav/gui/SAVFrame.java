@@ -29,6 +29,7 @@ public class SAVFrame extends JFrame {
 	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
 	private JComboBox<String> sorterComboBox;
 	private SAVHistoryComponent historyComponent;
+	private int currentSpeed = 1000;
 
 	public SAVFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -126,14 +127,17 @@ public class SAVFrame extends JFrame {
 
 		historyComponent.getHistoryItems().clear();
 		historyComponent.getHistoryItems().addAll(sorter.getHistory());
+		System.out.println(sorter.getHistory().size());
 
 		historyComponent.repaint();
+
+		new SteppingThread().start();
 	}
 
 	private int[] generateTestingArray() {
 		Random r = new Random();
 
-		int[] values = new int[r.nextInt(10)];
+		int[] values = new int[r.nextInt(20)];
 
 		for (int i = 0; i < values.length; i++)
 			values[i] = r.nextInt(SAVHistoryComponent.PLAYING_CARD_AMOUNT);
@@ -211,6 +215,21 @@ public class SAVFrame extends JFrame {
 
 	public void setSorters(List<BaseSorter> sorters) {
 		this.sorters = sorters;
+	}
+
+	private class SteppingThread extends Thread {
+		@Override
+		public void run() {
+			while (!SAVFrame.this.historyComponent.isSimulationEndReached()) {
+				try {
+					Thread.sleep(SAVFrame.this.currentSpeed);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				SAVFrame.this.historyComponent.nextStep();
+			}
+		}
 	}
 
 	public static void main(String[] args) {
