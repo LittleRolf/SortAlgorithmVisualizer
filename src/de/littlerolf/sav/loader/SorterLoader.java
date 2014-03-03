@@ -88,7 +88,7 @@ public class SorterLoader {
 		}
 	}
 	
-	public void instanciateAllClasses() {
+	public void instanstiateAllClasses() {
 		if(classes.size() == 0) {
 			if(debug) {
 				System.out.println("You have to call loadAllClasses() first!");
@@ -102,6 +102,10 @@ public class SorterLoader {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public List<BaseSorter> getAllSorters() {
+		return sorters;
 	}
 	
 	public BaseSorter getSorterByName(String name) {
