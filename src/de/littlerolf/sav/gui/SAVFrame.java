@@ -15,12 +15,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import jsyntaxpane.DefaultSyntaxKit;
 import de.littlerolf.sav.data.BaseSorter;
-import javax.swing.SwingConstants;
+import de.littlerolf.sav.loader.SorterLoader;
 
 public class SAVFrame extends JFrame {
 	/**
@@ -42,6 +43,8 @@ public class SAVFrame extends JFrame {
 	private SteppingThread currentSteppingThread;
 
 	private List<JComponent> disableMe = new ArrayList<JComponent>();
+
+	private SorterLoader sorterLoader = new SorterLoader("./classes/", true);
 
 	public SAVFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -189,55 +192,10 @@ public class SAVFrame extends JFrame {
 	}
 
 	private void reloadSorters() {
-		this.getSorters().clear();
 		// Temporary test obviously:
-		this.getSorters().add(new BaseSorter() {
-
-			@Override
-			public int[] sortArray(int[] values) {
-				qSort(values, 0, values.length - 1);
-
-				return values;
-			}
-
-			public void qSort(int x[], int links, int rechts) {
-				this.saveHistory(x);
-				if (links < rechts) {
-					int i = partition(x, links, rechts);
-					qSort(x, links, i - 1);
-					qSort(x, i + 1, rechts);
-				}
-			}
-
-			public int partition(int x[], int links, int rechts) {
-				int pivot, i, j, help;
-				pivot = x[rechts];
-				i = links;
-				j = rechts - 1;
-				while (i <= j) {
-					if (x[i] > pivot) {
-						// tausche x[i] und x[j]
-						help = x[i];
-						x[i] = x[j];
-						x[j] = help;
-						j--;
-					} else
-						i++;
-				}
-				// tausche x[i] und x[rechts]
-				help = x[i];
-				x[i] = x[rechts];
-				x[rechts] = help;
-
-				return i;
-			}
-
-			@Override
-			public String getName() {
-				return "Crazy Ulf";
-			}
-
-		});
+		this.sorterLoader.loadAllClasses();
+		this.sorterLoader.instanstiateAllClasses();
+		this.setSorters(this.sorterLoader.getAllSorters());
 		// TODO: implement sorter loading (needs
 		// SorterLoaderManagerDeviceAbstractFlugzeugManager first)
 
@@ -309,6 +267,5 @@ public class SAVFrame extends JFrame {
 		}
 
 		new SAVFrame().setVisible(true);
-		new CodeEditorFrame().setVisible(true);
 	}
 }
