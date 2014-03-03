@@ -11,8 +11,10 @@ import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
@@ -45,9 +47,10 @@ public class SAVFrame extends JFrame {
 
 	private List<JComponent> disableMe = new ArrayList<JComponent>();
 
-	private SorterLoader sorterLoader = new SorterLoader("./classes/");
+	private SorterLoader sorterLoader;
 
-	public SAVFrame() {
+	public SAVFrame(String path) {
+		sorterLoader = new SorterLoader(path);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
@@ -267,7 +270,6 @@ public class SAVFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException e) {
@@ -275,7 +277,25 @@ public class SAVFrame extends JFrame {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		}
+		JOptionPane
+				.showMessageDialog(
+						null,
+						"Yo. Also. Gleich kommt so ein Ordnerauswahlfenster."
+								+ " Da musst du dann mal eben den Ordner auswählen, in dessen Unterordnern deine .class-Dateien liegen."
+								+ " Alles normal.");
+		JFileChooser folderChooser = new JFileChooser();
+		folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		JFrame f = new JFrame();
+		f.setVisible(true);
+		int returnedValue = folderChooser.showOpenDialog(f);
+		f.dispose();
+		if (returnedValue == JFileChooser.APPROVE_OPTION) {
+			new SAVFrame(folderChooser.getSelectedFile().getAbsolutePath())
+					.setVisible(true);
+		} else {
+			JOptionPane.showMessageDialog(null, "Sheesh.", "Fail.",
+					JOptionPane.ERROR_MESSAGE);
+		}
 
-		new SAVFrame().setVisible(true);
 	}
 }
