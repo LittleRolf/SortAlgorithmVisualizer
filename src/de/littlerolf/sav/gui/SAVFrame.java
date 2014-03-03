@@ -18,6 +18,8 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import jsyntaxpane.DefaultSyntaxKit;
 import de.littlerolf.sav.data.BaseSorter;
@@ -39,7 +41,7 @@ public class SAVFrame extends JFrame {
 	private JLabel lblSpeed;
 
 	private SAVHistoryComponent historyComponent;
-	private int currentSpeed = 1000;
+	private int currentSpeed = 1500;
 	private SteppingThread currentSteppingThread;
 
 	private List<JComponent> disableMe = new ArrayList<JComponent>();
@@ -71,10 +73,25 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(sorterComboBox);
 		disableMe.add(sorterComboBox);
 
-		JSlider slider = new JSlider();
+		final JSlider slider = new JSlider();
 		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
-		slider.setBounds(455, 332, 156, 23);
+		slider.setBounds(455, 327, 156, 45);
 		getContentPane().add(slider);
+		slider.setMinimum(1);
+		slider.setMaximum(3000);
+		slider.setValue(1500);
+		slider.setMajorTickSpacing(1000);
+		slider.setMinorTickSpacing(100);
+		slider.setPaintTicks(true);
+		slider.setPaintLabels(true);
+		slider.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				SAVFrame.this.currentSpeed = slider.getValue();
+			}
+
+		});
 
 		JLabel lblGeschwindigkeit = new JLabel("Geschwindigkeit:");
 		lblGeschwindigkeit.setBounds(455, 307, 156, 14);
