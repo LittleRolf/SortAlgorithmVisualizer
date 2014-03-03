@@ -20,6 +20,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import jsyntaxpane.DefaultSyntaxKit;
 import de.littlerolf.sav.data.BaseSorter;
+import javax.swing.SwingConstants;
 
 public class SAVFrame extends JFrame {
 	/**
@@ -58,12 +59,12 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.onStartSimulationButtonPressed();
 			}
 		});
-		btnSimulieren.setBounds(10, 332, 215, 23);
+		btnSimulieren.setBounds(10, 332, 215, 29);
 		getContentPane().add(btnSimulieren);
 		disableMe.add(btnSimulieren);
 
 		sorterComboBox = new JComboBox<String>();
-		sorterComboBox.setBounds(596, 333, 294, 20);
+		sorterComboBox.setBounds(596, 333, 294, 28);
 		getContentPane().add(sorterComboBox);
 		disableMe.add(sorterComboBox);
 
@@ -73,11 +74,11 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(slider);
 
 		JLabel lblGeschwindigkeit = new JLabel("Geschwindigkeit:");
-		lblGeschwindigkeit.setBounds(430, 307, 89, 14);
+		lblGeschwindigkeit.setBounds(430, 307, 156, 14);
 		getContentPane().add(lblGeschwindigkeit);
 
 		JLabel lblImplementation = new JLabel("Implementation:");
-		lblImplementation.setBounds(596, 307, 89, 14);
+		lblImplementation.setBounds(596, 307, 117, 14);
 		getContentPane().add(lblImplementation);
 
 		JLabel lblKontrolle = new JLabel("Kontrolle:");
@@ -87,7 +88,8 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblKontrolle);
 
 		JLabel lblSchritte = new JLabel("Schritte:");
-		lblSchritte.setBounds(266, 326, 75, 14);
+		lblSchritte.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblSchritte.setBounds(228, 327, 134, 14);
 		getContentPane().add(lblSchritte);
 
 		lblStepAmount = new JLabel("0");
@@ -95,7 +97,8 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblStepAmount);
 
 		JLabel lblAktuellerSchritte = new JLabel("Aktueller Schritt:");
-		lblAktuellerSchritte.setBounds(266, 312, 103, 14);
+		lblAktuellerSchritte.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblAktuellerSchritte.setBounds(228, 313, 134, 14);
 		getContentPane().add(lblAktuellerSchritte);
 
 		lblCurrentStep = new JLabel("0");
@@ -103,14 +106,15 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblCurrentStep);
 
 		JLabel lblStatistik = new JLabel("Statistik:");
-		lblStatistik.setBounds(266, 294, 75, 14);
+		lblStatistik.setBounds(228, 295, 75, 14);
 		getContentPane().add(lblStatistik);
 
-		JLabel lblGeschwindigkeit_1 = new JLabel("Ø Geschwindigkeit:");
-		lblGeschwindigkeit_1.setBounds(266, 341, 103, 14);
+		JLabel lblGeschwindigkeit_1 = new JLabel("Ã˜ Geschwindigkeit:");
+		lblGeschwindigkeit_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblGeschwindigkeit_1.setBounds(228, 342, 134, 14);
 		getContentPane().add(lblGeschwindigkeit_1);
 
-		lblSpeed = new JLabel("0µs");
+		lblSpeed = new JLabel("0s");
 		lblSpeed.setBounds(374, 341, 46, 14);
 		getContentPane().add(lblSpeed);
 
@@ -122,12 +126,12 @@ public class SAVFrame extends JFrame {
 		scrollPane.setViewportView(historyComponent);
 
 		JButton btnNew = new JButton("Neu...");
-		btnNew.setBounds(710, 303, 75, 23);
+		btnNew.setBounds(710, 301, 75, 29);
 		getContentPane().add(btnNew);
 		disableMe.add(btnNew);
 
 		JButton btnEdit = new JButton("Bearbeiten...");
-		btnEdit.setBounds(787, 303, 103, 23);
+		btnEdit.setBounds(787, 301, 103, 29);
 		getContentPane().add(btnEdit);
 		disableMe.add(btnEdit);
 
@@ -157,7 +161,7 @@ public class SAVFrame extends JFrame {
 			averageSpeed += benchmarkResults[i];
 		averageSpeed /= benchmarkResults.length;
 
-		lblSpeed.setText(averageSpeed + "µs");
+		lblSpeed.setText(averageSpeed + "ï¿½s");
 
 		historyComponent.getHistoryItems().clear();
 		historyComponent.getHistoryItems().addAll(sorter.getHistory());
