@@ -161,7 +161,7 @@ public class SAVFrame extends JFrame {
 			averageSpeed += benchmarkResults[i];
 		averageSpeed /= benchmarkResults.length;
 
-		lblSpeed.setText(averageSpeed + "�s");
+		lblSpeed.setText(averageSpeed + "µs");
 
 		historyComponent.getHistoryItems().clear();
 		historyComponent.getHistoryItems().addAll(sorter.getHistory());
@@ -307,6 +307,7 @@ public class SAVFrame extends JFrame {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		}
+
 		new SAVFrame().setVisible(true);
 		new CodeEditorFrame().setVisible(true);
 	}
