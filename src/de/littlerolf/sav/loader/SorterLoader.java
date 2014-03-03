@@ -58,6 +58,8 @@ public class SorterLoader {
 	public void loadAllClasses() {
 		// Create a File object on the root of the directory containing the
 		// class file
+		this.classes.clear();
+		this.sorters.clear();
 		File file = new File(classpath);
 
 		try {
@@ -87,15 +89,15 @@ public class SorterLoader {
 			}
 		}
 	}
-	
+
 	public void instanstiateAllClasses() {
-		if(classes.size() == 0) {
-			if(debug) {
+		if (classes.size() == 0) {
+			if (debug) {
 				System.out.println("You have to call loadAllClasses() first!");
 			}
 			return;
 		}
-		for(Class c : classes) {
+		for (Class c : classes) {
 			try {
 				sorters.add((BaseSorter) c.newInstance());
 			} catch (InstantiationException | IllegalAccessException e) {
@@ -103,20 +105,20 @@ public class SorterLoader {
 			}
 		}
 	}
-	
+
 	public List<BaseSorter> getAllSorters() {
 		return sorters;
 	}
-	
+
 	public BaseSorter getSorterByName(String name) {
 		for (BaseSorter bs : sorters) {
-			if(bs.getName().equals(name)) {
+			if (bs.getName().equals(name)) {
 				return bs;
 			}
 		}
 		return null;
 	}
-	
+
 	public String[] getAvailableSorters() {
 		String[] packages = new String[sorters.size()];
 		for (int i = 0; i < sorters.size(); i++) {

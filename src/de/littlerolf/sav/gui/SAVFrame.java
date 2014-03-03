@@ -44,13 +44,13 @@ public class SAVFrame extends JFrame {
 
 	private List<JComponent> disableMe = new ArrayList<JComponent>();
 
-	private SorterLoader sorterLoader = new SorterLoader("./classes/", true);
+	private SorterLoader sorterLoader = new SorterLoader("./classes/");
 
 	public SAVFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
-		setSize(906, 400);
+		setSize(923, 400);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
 				/ 2 - this.getSize().height / 2);
@@ -67,26 +67,24 @@ public class SAVFrame extends JFrame {
 		disableMe.add(btnSimulieren);
 
 		sorterComboBox = new JComboBox<String>();
-		sorterComboBox.setBounds(596, 333, 294, 28);
+		sorterComboBox.setBounds(623, 333, 294, 28);
 		getContentPane().add(sorterComboBox);
 		disableMe.add(sorterComboBox);
 
 		JSlider slider = new JSlider();
 		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
-		slider.setBounds(430, 332, 156, 23);
+		slider.setBounds(455, 332, 156, 23);
 		getContentPane().add(slider);
 
 		JLabel lblGeschwindigkeit = new JLabel("Geschwindigkeit:");
-		lblGeschwindigkeit.setBounds(430, 307, 156, 14);
+		lblGeschwindigkeit.setBounds(455, 307, 156, 14);
 		getContentPane().add(lblGeschwindigkeit);
 
 		JLabel lblImplementation = new JLabel("Implementation:");
-		lblImplementation.setBounds(596, 307, 117, 14);
+		lblImplementation.setBounds(623, 307, 117, 14);
 		getContentPane().add(lblImplementation);
 
 		JLabel lblKontrolle = new JLabel("Kontrolle:");
-		lblKontrolle
-				.setToolTipText("oder auch \"Cockpit\"... h\u00F6h\u00F6, \"Cock\"...");
 		lblKontrolle.setBounds(10, 307, 89, 14);
 		getContentPane().add(lblKontrolle);
 
@@ -96,7 +94,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblSchritte);
 
 		lblStepAmount = new JLabel("0");
-		lblStepAmount.setBounds(374, 326, 46, 14);
+		lblStepAmount.setBounds(374, 326, 69, 14);
 		getContentPane().add(lblStepAmount);
 
 		JLabel lblAktuellerSchritte = new JLabel("Aktueller Schritt:");
@@ -105,7 +103,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblAktuellerSchritte);
 
 		lblCurrentStep = new JLabel("0");
-		lblCurrentStep.setBounds(374, 312, 46, 14);
+		lblCurrentStep.setBounds(374, 312, 69, 14);
 		getContentPane().add(lblCurrentStep);
 
 		JLabel lblStatistik = new JLabel("Statistik:");
@@ -118,25 +116,27 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblGeschwindigkeit_1);
 
 		lblSpeed = new JLabel("0s");
-		lblSpeed.setBounds(374, 341, 46, 14);
+		lblSpeed.setBounds(374, 341, 69, 14);
 		getContentPane().add(lblSpeed);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 880, 272);
+		scrollPane.setBounds(10, 11, 907, 272);
 		getContentPane().add(scrollPane);
 
 		historyComponent = new SAVHistoryComponent();
 		scrollPane.setViewportView(historyComponent);
 
-		JButton btnNew = new JButton("Neu...");
-		btnNew.setBounds(710, 301, 75, 29);
-		getContentPane().add(btnNew);
-		disableMe.add(btnNew);
+		JButton btnRefresh = new JButton("Neu laden");
+		btnRefresh.setBounds(737, 301, 180, 29);
+		getContentPane().add(btnRefresh);
+		btnRefresh.addActionListener(new ActionListener() {
 
-		JButton btnEdit = new JButton("Bearbeiten...");
-		btnEdit.setBounds(787, 301, 103, 29);
-		getContentPane().add(btnEdit);
-		disableMe.add(btnEdit);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SAVFrame.this.reloadSorters();
+			}
+		});
+		disableMe.add(btnRefresh);
 
 		reloadSorters();
 	}
@@ -192,13 +192,9 @@ public class SAVFrame extends JFrame {
 	}
 
 	private void reloadSorters() {
-		// Temporary test obviously:
 		this.sorterLoader.loadAllClasses();
 		this.sorterLoader.instanstiateAllClasses();
 		this.setSorters(this.sorterLoader.getAllSorters());
-		// TODO: implement sorter loading (needs
-		// SorterLoaderManagerDeviceAbstractFlugzeugManager first)
-
 		refreshUI();
 	}
 
