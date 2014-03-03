@@ -77,7 +77,7 @@ public class SAVFrame extends JFrame {
 
 		final JSlider slider = new JSlider();
 		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
-		slider.setBounds(455, 327, 156, 45);
+		slider.setBounds(455, 311, 156, 50);
 		getContentPane().add(slider);
 		slider.setMinimum(1);
 		slider.setMaximum(3000);
@@ -96,7 +96,7 @@ public class SAVFrame extends JFrame {
 		});
 
 		JLabel lblGeschwindigkeit = new JLabel("Geschwindigkeit:");
-		lblGeschwindigkeit.setBounds(455, 307, 156, 14);
+		lblGeschwindigkeit.setBounds(455, 295, 156, 14);
 		getContentPane().add(lblGeschwindigkeit);
 
 		JLabel lblImplementation = new JLabel("Implementation:");
