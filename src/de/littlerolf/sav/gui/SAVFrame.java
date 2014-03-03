@@ -21,7 +21,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import jsyntaxpane.DefaultSyntaxKit;
 import de.littlerolf.sav.data.BaseSorter;
 import de.littlerolf.sav.loader.SorterLoader;
 
@@ -186,7 +185,6 @@ public class SAVFrame extends JFrame {
 		historyComponent.getHistoryItems().clear();
 		historyComponent.getHistoryItems().addAll(sorter.getHistory());
 		historyComponent.reset();
-		System.out.println(sorter.getHistory().size());
 
 		historyComponent.repaint();
 
@@ -269,7 +267,6 @@ public class SAVFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		DefaultSyntaxKit.initKit();
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
