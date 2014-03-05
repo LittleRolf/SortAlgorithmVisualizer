@@ -20,7 +20,7 @@ public class SAVHistoryComponent extends JComponent {
 	public static final int PLAYING_CARD_AMOUNT = 52;
 
 	private BufferedImage[] cardImages;
-
+	private BufferedImage awesomeImage;
 	{
 		cardImages = new BufferedImage[PLAYING_CARD_AMOUNT];
 		String[] names = new String[] { "2", "3", "4", "5", "6", "7", "8", "9",
@@ -47,22 +47,35 @@ public class SAVHistoryComponent extends JComponent {
 				colorsIndex++;
 			}
 		}
+
+		try {
+			awesomeImage = ImageIO.read(getClass().getClassLoader()
+					.getResource("doge.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private List<HistoryItem> historyItems = new ArrayList<HistoryItem>();
 	private int currentIndex = 0;
 
 	public SAVHistoryComponent() {
-		HistoryItem i = new HistoryItem();
-		i.values = new int[] { 4, 10, 5, 20, 50, 10, 3, 48 };
-		getHistoryItems().add(i);
 	}
 
 	public void nextStep() {
 		currentIndex++;
 		if (currentIndex >= historyItems.size())
 			currentIndex--;
+
 		repaint();
+	}
+
+	public boolean isSimulationEndReached() {
+		return currentIndex >= historyItems.size() - 1;
+	}
+
+	public int getCurrentStep() {
+		return currentIndex;
 	}
 
 	public void reset() {
@@ -79,9 +92,10 @@ public class SAVHistoryComponent extends JComponent {
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
 				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-		HistoryItem currentItem = getHistoryItems().get(currentIndex);
-		if (currentItem == null)
+		if (getHistoryItems().isEmpty())
 			return;
+
+		HistoryItem currentItem = getHistoryItems().get(currentIndex);
 
 		int valueAmount = currentItem.values.length;
 		int width = getWidth();
@@ -89,10 +103,12 @@ public class SAVHistoryComponent extends JComponent {
 		int i = 0;
 		int diff = width / 2 / valueAmount;
 		for (int value : currentItem.values) {
-			if (value > cardImages.length || value < 0)
-				continue;
-
-			BufferedImage cardImage = cardImages[value];
+			BufferedImage cardImage;
+			if (value < 0 || value > cardImages.length) {
+				cardImage = this.awesomeImage;
+			} else {
+				cardImage = cardImages[value];
+			}
 			g.drawImage(cardImage,
 					(width / 4) + (i * diff) - cardImage.getWidth() / 8, height
 							/ 2 - cardImage.getHeight() / 2 / 2,
