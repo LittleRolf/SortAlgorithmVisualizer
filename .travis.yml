@@ -5,6 +5,6 @@ jdk:
 - openjdk7
 - oraclejdk8
 script: ant clean-build
-after_success: "if [ ${TRAVIS_JOB_NUMBER##*.} -eq 1 ]; then; gem install travis_github_deployer; travis_github_deployer; fi"
+after_success: ./deploy.sh
 dd:
   secure: PLCLhlb+LOexrIPm37hlrVYAGbk6bygwz+dy/dWR8esMZN4Wz/UT+GAz9/2E9QDHjF25V5SzWafmGIfN6MZ8IPZ5zk1yVe6ZNcOP9F8TElZeFa0VmyFSgA2LqUM7+VsoWNFj+MTVtgszXlpyY4Jtd3AlCM4a2+fceGB5uAF1WHw=
