@@ -1,0 +1,41 @@
+<project name="SortAlgorithmVisualizer">
+  <property name="src.dir"     value="src"/>
+
+  <property name="build.dir"   value="build"/>
+  <property name="classes.dir" value="${build.dir}/classes"/>
+  
+  <property name="dist.dir"    value="dist" />
+  <property name="jar.dir"     value="${dist.dir}/jar"/>
+
+  <property name="main-class"  value="de.littlerolf.sav.SortAlgorithmVisualizer"/>
+  <property name="jar.name"    value="SAV.jar" />
+  <property name="api-jar.name"    value="SAV_API.jar" />
+  
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="compile">
+        	<mkdir dir="${classes.dir}"/>
+        	<javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+  </target>
+
+  <target name="jar">
+        	<mkdir dir="${jar.dir}"/>
+        	<jar destfile="${jar.dir}/${jar.name}" basedir="${classes.dir}">
+            		<manifest>
+                		<attribute name="Main-Class" value="${main-class}"/>
+            		</manifest>
+        	</jar>
+	</target>
+  
+  <target name="api-jar">
+        	<mkdir dir="${jar.dir}"/>
+        	<jar destfile="${jar.dir}/${api-jar.name}" basedir="${classes.dir}" includes="**/data/**" />
+	</target>
+
+	<target name="run">
+        	<java jar="${jar.dir}/${jar.name}" fork="true"/>
+	</target>
+</project>
