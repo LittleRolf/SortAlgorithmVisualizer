@@ -5,6 +5,7 @@ jdk:
 - openjdk7
 - oraclejdk8
 script: ant clean-build
-after_success: ./deploy.sh
-dd:
-  secure: PLCLhlb+LOexrIPm37hlrVYAGbk6bygwz+dy/dWR8esMZN4Wz/UT+GAz9/2E9QDHjF25V5SzWafmGIfN6MZ8IPZ5zk1yVe6ZNcOP9F8TElZeFa0VmyFSgA2LqUM7+VsoWNFj+MTVtgszXlpyY4Jtd3AlCM4a2+fceGB5uAF1WHw=
+after_success: "./deploy.sh"
+env:
+  global:
+    secure: uXH05twyRorFCMk8PtTem5EGZrQ31MkVnkPHxZbdlXUl8fDUkMVD3yRB8+pmGw/tTkx6Bjo6Q3VsaIOAgP+mP5QVsOD2XvZ8Dk/LTl2N4FUpyfUjdCwJt/qXUcwIJdbzIED29g05pLPBS3HSeyTRNzSvC5Rajc0yDXfx6A3z6RA=
