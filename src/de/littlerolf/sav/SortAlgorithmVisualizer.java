@@ -20,9 +20,9 @@ public class SortAlgorithmVisualizer {
 		JOptionPane
 				.showMessageDialog(
 						null,
-						"Yo. Also. Gleich kommt so ein Ordnerauswahlfenster."
-								+ " Da musst du dann mal eben den Ordner auswählen, in dessen Unterordnern deine .class-Dateien liegen."
-								+ " Alles normal.");
+						"Yo. Also. Gleich kommt so ein Ordnerauswahlfenster.\n"
+								+ "Da musst du dann mal eben den Ordner auswählen, in dessen Unterordnern deine .class-Dateien liegen.\n"
+								+ "Alles normal.");
 		JFileChooser folderChooser = new JFileChooser();
 		folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		JFrame f = new JFrame();
