@@ -1,4 +1,4 @@
-<project name="SortAlgorithmVisualizer">
+<project name="SortAlgorithmVisualizer" default="main">
   <property name="src.dir"     value="src"/>
 
   <property name="build.dir"   value="build"/>
@@ -21,7 +21,7 @@
         	<javac srcdir="${src.dir}" destdir="${classes.dir}"/>
   </target>
 
-  <target name="jar">
+  <target name="jar" depends="compile">
         	<mkdir dir="${jar.dir}"/>
         	<jar destfile="${jar.dir}/${jar.name}" basedir="${classes.dir}">
             		<manifest>
@@ -30,12 +30,16 @@
         	</jar>
 	</target>
   
-  <target name="api-jar">
+  <target name="api-jar" depends="compile">
         	<mkdir dir="${jar.dir}"/>
         	<jar destfile="${jar.dir}/${api-jar.name}" basedir="${classes.dir}" includes="**/data/**" />
 	</target>
 
-	<target name="run">
+	<target name="run" depends="jar">
         	<java jar="${jar.dir}/${jar.name}" fork="true"/>
 	</target>
+  
+  <target name="clean-build" depends="clean,jar,api-jar"/>
+
+  <target name="main" depends="clean,api-jar,run"/>
 </project>
