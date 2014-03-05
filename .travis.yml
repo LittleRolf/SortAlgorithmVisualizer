@@ -1,7 +1,6 @@
 language: java
 jdk:
   - oraclejdk7
-  - oraclejdk6
   - openjdk6
   - openjdk7
 script: ant clean-build
