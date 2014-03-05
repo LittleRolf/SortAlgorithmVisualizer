@@ -1,6 +1,9 @@
 language: java
 jdk:
-  - oraclejdk7
-  - openjdk6
-  - openjdk7
+- oraclejdk7
+- openjdk6
+- openjdk7
 script: ant clean-build
+after_success: gem install travis_github_deploy; travis_github_deployer
+dd:
+  secure: PLCLhlb+LOexrIPm37hlrVYAGbk6bygwz+dy/dWR8esMZN4Wz/UT+GAz9/2E9QDHjF25V5SzWafmGIfN6MZ8IPZ5zk1yVe6ZNcOP9F8TElZeFa0VmyFSgA2LqUM7+VsoWNFj+MTVtgszXlpyY4Jtd3AlCM4a2+fceGB5uAF1WHw=

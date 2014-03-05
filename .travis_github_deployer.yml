@@ -1,0 +1,5 @@
+destination_repository: https://github.com/LittleRolf/SortAlgorithmVisualizer.git
+
+files_to_deploy:
+	dist/jar/SAV.jar
+	dist/jar/SAV_API.jar
