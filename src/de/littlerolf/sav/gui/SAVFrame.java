@@ -36,7 +36,7 @@ public class SAVFrame extends JFrame {
 
 	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
 
-	private JComboBox<String> sorterComboBox;
+	private JComboBox sorterComboBox;
 	private JLabel lblStepAmount;
 	private JLabel lblCurrentStep;
 	private JLabel lblSpeed;
@@ -70,7 +70,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(btnSimulieren);
 		disableMe.add(btnSimulieren);
 
-		sorterComboBox = new JComboBox<String>();
+		sorterComboBox = new JComboBox();
 		sorterComboBox.setBounds(623, 333, 294, 28);
 		getContentPane().add(sorterComboBox);
 		disableMe.add(sorterComboBox);
