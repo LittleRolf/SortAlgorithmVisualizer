@@ -100,9 +100,11 @@ public class SorterLoader {
 		for (Class c : classes) {
 			try {
 				sorters.add((BaseSorter) c.newInstance());
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (InstantiationException e) {
 				e.printStackTrace();
-			}
+			} catch (IllegalAccessException e) {
+            e.printStackTrace();
+         }
 		}
 	}
 
