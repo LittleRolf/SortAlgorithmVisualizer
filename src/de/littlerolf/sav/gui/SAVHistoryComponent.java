@@ -1,5 +1,7 @@
 package de.littlerolf.sav.gui;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -109,12 +111,32 @@ public class SAVHistoryComponent extends JComponent {
 			} else {
 				cardImage = cardImages[value];
 			}
-			g.drawImage(cardImage,
-					(width / 4) + (i * diff) - cardImage.getWidth() / 8, height
-							/ 2 - cardImage.getHeight() / 2 / 2,
-					cardImage.getWidth() / 2, cardImage.getHeight() / 2, null);
+
+			int x = (width / 4) + (i * diff) - cardImage.getWidth() / 8;
+			int y = height / 2 - cardImage.getHeight() / 2 / 2;
+			int imgWidth = cardImage.getWidth() / 2;
+			int imgHeight = cardImage.getHeight() / 2;
+
+			g.setStroke(new BasicStroke(3));
+
+			if (i == currentItem.index)
+				g.drawRect(x, y, imgWidth, imgHeight);
+
+			g.drawImage(cardImage, x, y, imgWidth, imgHeight, null);
 			i++;
 		}
+	}
+
+	public BufferedImage colorImage(BufferedImage loadImg, int red, int green,
+			int blue) {
+		BufferedImage img = new BufferedImage(loadImg.getWidth(),
+				loadImg.getHeight(), BufferedImage.TRANSLUCENT);
+		Graphics2D graphics = img.createGraphics();
+		Color newColor = new Color(red, green, blue, 0);
+		graphics.setXORMode(newColor);
+		graphics.drawImage(loadImg, null, 0, 0);
+		graphics.dispose();
+		return img;
 	}
 
 	public List<HistoryItem> getHistoryItems() {

@@ -11,15 +11,11 @@ import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -183,7 +179,7 @@ public class SAVFrame extends JFrame {
 			averageSpeed += benchmarkResults[i];
 		averageSpeed /= benchmarkResults.length;
 
-		lblSpeed.setText(averageSpeed + "Âµs");
+		lblSpeed.setText(averageSpeed + "µs");
 
 		historyComponent.getHistoryItems().clear();
 		historyComponent.getHistoryItems().addAll(sorter.getHistory());
@@ -213,6 +209,7 @@ public class SAVFrame extends JFrame {
 		this.sorterLoader.loadAllClasses();
 		this.sorterLoader.instanstiateAllClasses();
 		this.setSorters(this.sorterLoader.getAllSorters());
+
 		refreshUI();
 	}
 
