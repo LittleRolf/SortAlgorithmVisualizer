@@ -32,13 +32,17 @@ public class SortAlgorithmVisualizer {
 		int localVersion = getLocalVersion();
 		int downloadedVersion = getDownloadedJarVersion();
 
-		if (remoteVersion > downloadedVersion && remoteVersion > localVersion)
+		if (remoteVersion > downloadedVersion && remoteVersion > localVersion) {
+			System.out.println("Starting remote version.");
 			startJar(downloadRemoteJar().getAbsolutePath());
-		else if (downloadedVersion > remoteVersion
-				&& downloadedVersion > localVersion)
+		} else if (downloadedVersion > remoteVersion
+				&& downloadedVersion > localVersion) {
+			System.out.println("Starting cached version.");
 			startJar(DOWNLOADED_FILE.getAbsolutePath());
-		else
+		} else {
+			System.out.println("Starting local version.");
 			startLocal();
+		}
 		/*
 		 * if (getLocalVersion() > -1) { if (isRemoteNewer()) {
 		 * startJar(downloadRemoteJar().getAbsolutePath()); } else {
@@ -144,9 +148,15 @@ public class SortAlgorithmVisualizer {
 		System.out.println("Starting jar " + path + ".");
 		ProcessBuilder pb = new ProcessBuilder("java", "-classpath", path,
 				SortAlgorithmVisualizer.class.getName());
+		pb.inheritIO();
 		try {
-			pb.start();
+			Process p = pb.start();
+			p.waitFor();
+
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
