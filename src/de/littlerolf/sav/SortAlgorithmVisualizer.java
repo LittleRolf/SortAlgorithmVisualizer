@@ -1,10 +1,11 @@
 package de.littlerolf.sav;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ProcessBuilder.Redirect;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -32,17 +33,21 @@ public class SortAlgorithmVisualizer {
 		int remoteVersion = getRemoteVersion();
 		int localVersion = getLocalVersion();
 		int downloadedVersion = getDownloadedJarVersion();
-
-		if (remoteVersion > downloadedVersion && remoteVersion > localVersion) {
-			System.out.println("Starting remote version.");
-			startJar(downloadRemoteJar().getAbsolutePath());
-		} else if (downloadedVersion > remoteVersion
-				&& downloadedVersion > localVersion) {
-			System.out.println("Starting cached version.");
-			startJar(DOWNLOADED_FILE.getAbsolutePath());
-		} else {
-			System.out.println("Starting local version.");
+		if (localVersion == -1) {
 			startLocal();
+		} else {
+			if (remoteVersion > downloadedVersion
+					&& remoteVersion > localVersion) {
+				System.out.println("Starting remote version.");
+				startJar(downloadRemoteJar().getAbsolutePath());
+			} else if (downloadedVersion > remoteVersion
+					&& downloadedVersion > localVersion) {
+				System.out.println("Starting cached version.");
+				startJar(DOWNLOADED_FILE.getAbsolutePath());
+			} else {
+				System.out.println("Starting local version.");
+				startLocal();
+			}
 		}
 		/*
 		 * if (getLocalVersion() > -1) { if (isRemoteNewer()) {
@@ -149,10 +154,11 @@ public class SortAlgorithmVisualizer {
 		System.out.println("Starting jar " + path + ".");
 		ProcessBuilder pb = new ProcessBuilder("java", "-classpath", path,
 				SortAlgorithmVisualizer.class.getName());
-		pb.redirectInput(Redirect.INHERIT).redirectOutput(Redirect.INHERIT)
-				.redirectError(Redirect.INHERIT);
 		try {
 			Process p = pb.start();
+			new StreamGobbler(p.getErrorStream()).start();
+			new StreamGobbler(p.getInputStream()).start();
+
 			p.waitFor();
 
 		} catch (IOException e) {
@@ -189,6 +195,27 @@ public class SortAlgorithmVisualizer {
 		} else {
 			JOptionPane.showMessageDialog(null, "Sheesh.", "Fail.",
 					JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private static class StreamGobbler extends Thread {
+		InputStream is;
+
+		// reads everything from is until empty.
+		StreamGobbler(InputStream is) {
+			this.is = is;
+		}
+
+		public void run() {
+			try {
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				String line = null;
+				while ((line = br.readLine()) != null)
+					System.out.println(line);
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
 		}
 	}
 }
