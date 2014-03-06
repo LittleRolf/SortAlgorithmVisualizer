@@ -77,6 +77,8 @@ public class SorterLoader {
 					classes.add(cl.loadClass(folder + ".Sorter"));
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
+				} catch (NoClassDefFoundError e) {
+					e.printStackTrace();
 				}
 			}
 
