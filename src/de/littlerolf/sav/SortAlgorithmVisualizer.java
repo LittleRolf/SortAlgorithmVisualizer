@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -148,7 +149,8 @@ public class SortAlgorithmVisualizer {
 		System.out.println("Starting jar " + path + ".");
 		ProcessBuilder pb = new ProcessBuilder("java", "-classpath", path,
 				SortAlgorithmVisualizer.class.getName());
-		pb.inheritIO();
+		pb.redirectInput(Redirect.INHERIT).redirectOutput(Redirect.INHERIT)
+				.redirectError(Redirect.INHERIT);
 		try {
 			Process p = pb.start();
 			p.waitFor();
