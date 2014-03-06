@@ -73,11 +73,15 @@ public class SorterLoader {
 			String[] directories = getSubdirectories();
 
 			for (String folder : directories) {
-				classes.add(cl.loadClass(folder + ".Sorter"));
+				try {
+					classes.add(cl.loadClass(folder + ".Sorter"));
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
 			}
 
 		} catch (MalformedURLException e) {
-		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 
 		if (debug) {
@@ -103,8 +107,8 @@ public class SorterLoader {
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-            e.printStackTrace();
-         }
+				e.printStackTrace();
+			}
 		}
 	}
 
