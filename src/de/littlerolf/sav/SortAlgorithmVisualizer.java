@@ -24,10 +24,15 @@ public class SortAlgorithmVisualizer {
 	private static final String SERVER_URL = "http://littlerolf.github.io/SortAlgorithmVisualizer/";
 
 	public static void main(String[] args) {
-		if (isRemoteNewer()) {
-			startJar(downloadRemoteJar().getAbsolutePath());
-		} else
+		if (getLocalVersion() > -1) {
+			if (isRemoteNewer()) {
+				startJar(downloadRemoteJar().getAbsolutePath());
+			} else {
+				startLocal();
+			}
+		} else {
 			startLocal();
+		}
 	}
 
 	private static int getLocalVersion() {
