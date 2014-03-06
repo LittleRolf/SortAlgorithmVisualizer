@@ -10,6 +10,10 @@ import de.littlerolf.sav.gui.SAVFrame;
 
 public class SortAlgorithmVisualizer {
 	public static void main(String[] args) {
+		startLocal();
+	}
+
+	private static void startLocal() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (UnsupportedLookAndFeelException e) {

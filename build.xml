@@ -1,47 +1,50 @@
 <project name="SortAlgorithmVisualizer" default="main">
-  <property name="src.dir"     value="src"/>
-  <property name="res.dir"     value="res"/>
+	<property name="src.dir" value="src" />
+	<property name="res.dir" value="res" />
 
-  <property name="build.dir"   value="build"/>
-  <property name="classes.dir" value="${build.dir}/classes"/>
-  
-  <property name="dist.dir"    value="dist" />
-  <property name="jar.dir"     value="${dist.dir}/jar"/>
+	<property name="build.dir" value="build" />
+	<property name="classes.dir" value="${build.dir}/classes" />
 
-  <property name="main-class"  value="de.littlerolf.sav.SortAlgorithmVisualizer"/>
-  <property name="jar.name"    value="SAV.jar" />
-  <property name="api-jar.name"    value="SAV_API.jar" />
-  
+	<property name="dist.dir" value="dist" />
+	<property name="jar.dir" value="${dist.dir}/jar" />
+
+	<property name="main-class" value="de.littlerolf.sav.SortAlgorithmVisualizer" />
+	<property name="jar.name" value="SAV.jar" />
+	<property name="api-jar.name" value="SAV_API.jar" />
+
+	<property environment="env" />
+
 	<target name="clean">
 		<delete dir="${build.dir}" />
 		<delete dir="${dist.dir}" />
 	</target>
 
 	<target name="compile">
-        	<mkdir dir="${classes.dir}"/>
-        	<javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false"/>
-  </target>
-
-  <target name="jar" depends="compile">
-        	<mkdir dir="${jar.dir}"/>
-        	<jar destfile="${jar.dir}/${jar.name}" basedir="${classes.dir}">
-                <fileset dir="${res.dir}" />
-            		<manifest>
-                		<attribute name="Main-Class" value="${main-class}"/>
-            		</manifest>
-        	</jar>
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="false" />
 	</target>
-  
-  <target name="api-jar" depends="compile">
-        	<mkdir dir="${jar.dir}"/>
-        	<jar destfile="${jar.dir}/${api-jar.name}" basedir="${classes.dir}" includes="**/data/**" />
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/${jar.name}" basedir="${classes.dir}">
+			<fileset dir="${res.dir}" />
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+				<attribute name="Build-Number" value="${env.TRAVIS_BUILD_NUMBER}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="api-jar" depends="compile">
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/${api-jar.name}" basedir="${classes.dir}" includes="**/data/**" />
 	</target>
 
 	<target name="run" depends="jar">
-        	<java jar="${jar.dir}/${jar.name}" fork="true"/>
+		<java jar="${jar.dir}/${jar.name}" fork="true" />
 	</target>
-  
-  <target name="clean-build" depends="clean,jar,api-jar"/>
 
-  <target name="main" depends="clean,api-jar,run"/>
+	<target name="clean-build" depends="clean,jar,api-jar" />
+
+	<target name="main" depends="clean,api-jar,run" />
 </project>
