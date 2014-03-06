@@ -179,7 +179,7 @@ public class SAVFrame extends JFrame {
 			averageSpeed += benchmarkResults[i];
 		averageSpeed /= benchmarkResults.length;
 
-		lblSpeed.setText(averageSpeed + "µs");
+		lblSpeed.setText(averageSpeed + "Âµs");
 
 		historyComponent.getHistoryItems().clear();
 		historyComponent.getHistoryItems().addAll(sorter.getHistory());

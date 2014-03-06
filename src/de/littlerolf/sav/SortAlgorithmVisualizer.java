@@ -140,10 +140,6 @@ public class SortAlgorithmVisualizer {
 		return null;
 	}
 
-	private static boolean isRemoteNewer() {
-		return getRemoteVersion() > getLocalVersion();
-	}
-
 	private static void startJar(String path) {
 		System.out.println("Starting jar " + path + ".");
 		ProcessBuilder pb = new ProcessBuilder("java", "-classpath", path,
