@@ -10,6 +10,7 @@ import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import javax.swing.JFileChooser;
@@ -22,17 +23,27 @@ import de.littlerolf.sav.gui.SAVFrame;
 
 public class SortAlgorithmVisualizer {
 	private static final String SERVER_URL = "http://littlerolf.github.io/SortAlgorithmVisualizer/";
+	private static final File DOWNLOADED_FILE = new File(
+			System.getProperty("user.home") + File.separator + ".sav"
+					+ File.separator + "SAV.jar");
 
 	public static void main(String[] args) {
-		if (getLocalVersion() > -1) {
-			if (isRemoteNewer()) {
-				startJar(downloadRemoteJar().getAbsolutePath());
-			} else {
-				startLocal();
-			}
-		} else {
+		int remoteVersion = getRemoteVersion();
+		int localVersion = getLocalVersion();
+		int downloadedVersion = getDownloadedJarVersion();
+
+		if (remoteVersion > downloadedVersion && remoteVersion > localVersion)
+			startJar(downloadRemoteJar().getAbsolutePath());
+		else if (downloadedVersion > remoteVersion
+				&& downloadedVersion > localVersion)
+			startJar(DOWNLOADED_FILE.getAbsolutePath());
+		else
 			startLocal();
-		}
+		/*
+		 * if (getLocalVersion() > -1) { if (isRemoteNewer()) {
+		 * startJar(downloadRemoteJar().getAbsolutePath()); } else {
+		 * startLocal(); } } else { startLocal(); }
+		 */
 	}
 
 	private static int getLocalVersion() {
@@ -46,6 +57,24 @@ public class SortAlgorithmVisualizer {
 			System.out.println("Local version is " + version + ".");
 			return version;
 
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+		}
+		return -1;
+	}
+
+	private static int getDownloadedJarVersion() {
+		if (!DOWNLOADED_FILE.exists())
+			return -1;
+
+		try {
+			JarFile f = new JarFile(DOWNLOADED_FILE);
+			int version = Integer.valueOf(f.getManifest().getMainAttributes()
+					.getValue("Build-Number"));
+			f.close();
+			System.out.println("Downloaded version is " + version + ".");
+			return version;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
@@ -91,8 +120,7 @@ public class SortAlgorithmVisualizer {
 
 	private static File downloadRemoteJar() {
 		System.out.println("Downloading remote jar.");
-		File f = new File(System.getProperty("user.home") + File.separator
-				+ ".sav" + File.separator + "SAV.jar");
+		File f = DOWNLOADED_FILE;
 		f.getParentFile().mkdirs();
 		URL website;
 		try {
