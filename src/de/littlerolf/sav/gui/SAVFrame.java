@@ -56,7 +56,7 @@ public class SAVFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
-		setSize(1007, 430);
+		setSize(1007, 450);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
 				/ 2 - this.getSize().height / 2);
@@ -79,7 +79,7 @@ public class SAVFrame extends JFrame {
 
 		final JSlider slider = new JSlider();
 		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
-		slider.setBounds(455, 311, 156, 50);
+		slider.setBounds(455, 311, 156, 80);
 		getContentPane().add(slider);
 		slider.setMinimum(1);
 		slider.setMaximum(3000);
@@ -102,7 +102,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblGeschwindigkeit);
 
 		final JToggleButton chkPause = new JToggleButton("Pause");
-		chkPause.setBounds(623, 315, 70, 30);
+		chkPause.setBounds(623, 330, 70, 30);
 		getContentPane().add(chkPause);
 		chkPause.addItemListener(new ItemListener() {
 
@@ -119,7 +119,7 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.SimulationNextStep();
 			}
 		});
-		btnNextStep.setBounds(585, 365, 105, 30);
+		btnNextStep.setBounds(585, 395, 105, 30);
 		getContentPane().add(btnNextStep);
 		btnNextStep.setEnabled(false);;
 		
@@ -129,7 +129,7 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.SimulationLastStep();
 			}
 		});
-		btnLastStep.setBounds(455, 365, 125, 30);
+		btnLastStep.setBounds(455, 395, 125, 30);
 		getContentPane().add(btnLastStep);
 		btnLastStep.setEnabled(false);;
 
