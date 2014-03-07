@@ -56,7 +56,7 @@ public class SAVFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
-		setSize(1007, 450);
+		setSize(1007, 455);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
 				/ 2 - this.getSize().height / 2);
