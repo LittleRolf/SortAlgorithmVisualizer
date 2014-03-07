@@ -14,7 +14,7 @@ public class ProgressFrame extends JFrame {
 	public ProgressFrame() {
 		setResizable(false);
 		setTitle("Doing awesome shit.");
-
+		setLocationRelativeTo(null);
 		progressBar = new JProgressBar();
 		progressBar.setStringPainted(true);
 		getContentPane().add(progressBar, BorderLayout.CENTER);
