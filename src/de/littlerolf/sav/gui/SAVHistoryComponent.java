@@ -64,10 +64,18 @@ public class SAVHistoryComponent extends JComponent {
 	public SAVHistoryComponent() {
 	}
 
-	public void nextStep() {
+	public void doNextStep() {
 		currentIndex++;
 		if (currentIndex >= historyItems.size())
 			currentIndex--;
+
+		repaint();
+	}
+	
+	public void doPreviousStep() {
+		currentIndex--;
+		if (currentIndex < 0)
+			currentIndex++;
 
 		repaint();
 	}
