@@ -71,6 +71,14 @@ public class SAVHistoryComponent extends JComponent {
 
 		repaint();
 	}
+	
+	public void lastStep() {
+		currentIndex--;
+		if (currentIndex < 0)
+			currentIndex++;
+
+		repaint();
+	}
 
 	public boolean isSimulationEndReached() {
 		return currentIndex >= historyItems.size() - 1;
