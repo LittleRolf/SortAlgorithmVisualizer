@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.littlerolf.sav.data.BaseSorter;
+import de.littlerolf.sav.gui.ProgressFrame;
 
 /**
  * The Main Class of the Loader module, used for loading and accessing the
@@ -61,7 +62,8 @@ public class SorterLoader {
 		this.classes.clear();
 		this.sorters.clear();
 		File file = new File(classpath);
-
+		ProgressFrame frame = new ProgressFrame();
+		frame.setVisible(true);
 		try {
 			// Convert File to a URL
 			URL url = file.toURI().toURL(); // file:/c:/myclasses/
@@ -71,8 +73,10 @@ public class SorterLoader {
 			ClassLoader cl = new URLClassLoader(urls);
 
 			String[] directories = getSubdirectories();
-
+			frame.setMaximum(directories.length);
+			int i = 0;
 			for (String folder : directories) {
+				frame.setValue(i++);
 				try {
 					classes.add(cl.loadClass(folder + ".Sorter"));
 				} catch (ClassNotFoundException e) {
@@ -85,6 +89,7 @@ public class SorterLoader {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
+		frame.setVisible(false);
 
 		if (debug) {
 			System.out.println("[Debug] Loaded Classes:");
