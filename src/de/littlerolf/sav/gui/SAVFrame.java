@@ -15,9 +15,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import de.littlerolf.sav.data.BaseSorter;
 import de.littlerolf.sav.loader.SorterLoader;
@@ -39,6 +42,7 @@ public class SAVFrame extends JFrame {
 
 	private SAVHistoryComponent historyComponent;
 	private int currentSpeed = 1500;
+	private boolean isSimulationRunning = true;
 	private SteppingThread currentSteppingThread;
 
 	private List<JComponent> disableMe = new ArrayList<JComponent>();
@@ -50,7 +54,7 @@ public class SAVFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
-		setSize(928, 400);
+		setSize(1007, 400);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
 				/ 2 - this.getSize().height / 2);
@@ -67,7 +71,7 @@ public class SAVFrame extends JFrame {
 		disableMe.add(btnSimulieren);
 
 		sorterComboBox = new JComboBox();
-		sorterComboBox.setBounds(623, 333, 294, 28);
+		sorterComboBox.setBounds(703, 333, 294, 28);
 		getContentPane().add(sorterComboBox);
 		disableMe.add(sorterComboBox);
 
@@ -95,8 +99,18 @@ public class SAVFrame extends JFrame {
 		lblGeschwindigkeit.setBounds(455, 295, 156, 14);
 		getContentPane().add(lblGeschwindigkeit);
 
+		final JCheckBox chkPause = new JCheckBox("Pause");
+		chkPause.setBounds(623, 320, 90, 30);
+		getContentPane().add(chkPause);
+		chkPause.addItemListener(new ItemListener() {
+
+			public void itemStateChanged(ItemEvent e) {
+				SAVFrame.this.isSimulationRunning = (e.getStateChange() == ItemEvent.DESELECTED);
+			}
+		});
+
 		JLabel lblImplementation = new JLabel("Implementation:");
-		lblImplementation.setBounds(623, 307, 117, 14);
+		lblImplementation.setBounds(703, 307, 117, 14);
 		getContentPane().add(lblImplementation);
 
 		JLabel lblKontrolle = new JLabel("Kontrolle:");
@@ -135,14 +149,14 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblSpeed);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 907, 272);
+		scrollPane.setBounds(10, 11, 987, 272);
 		getContentPane().add(scrollPane);
 
 		historyComponent = new SAVHistoryComponent();
 		scrollPane.setViewportView(historyComponent);
 
 		JButton btnRefresh = new JButton("Neu laden");
-		btnRefresh.setBounds(737, 301, 180, 29);
+		btnRefresh.setBounds(830, 301, 167, 29);
 		getContentPane().add(btnRefresh);
 		btnRefresh.addActionListener(new ActionListener() {
 
@@ -241,13 +255,13 @@ public class SAVFrame extends JFrame {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-
-				SAVFrame.this.historyComponent.nextStep();
-				SAVFrame.this
-						.onSteppingProgress(SAVFrame.this.historyComponent
-								.getCurrentStep(),
-								SAVFrame.this.historyComponent
-										.getHistoryItems().size());
+				if (SAVFrame.this.isSimulationRunning) {
+					SAVFrame.this.historyComponent.nextStep();
+					SAVFrame.this.onSteppingProgress(
+							SAVFrame.this.historyComponent.getCurrentStep(),
+							SAVFrame.this.historyComponent.getHistoryItems()
+									.size());
+				}
 			}
 			SAVFrame.this.onSteppingFinished();
 		}
