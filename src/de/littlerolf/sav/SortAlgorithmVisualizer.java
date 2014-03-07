@@ -36,6 +36,7 @@ public class SortAlgorithmVisualizer {
 		int remoteVersion = getRemoteVersion();
 		int localVersion = getLocalVersion();
 		int downloadedVersion = getDownloadedJarVersion();
+
 		if (localVersion == -1) {
 			startLocal();
 		} else {
@@ -47,7 +48,11 @@ public class SortAlgorithmVisualizer {
 					&& downloadedVersion > localVersion) {
 				System.out.println("Starting cached version.");
 				startJar(DOWNLOADED_FILE.getAbsolutePath());
+			} else if (remoteVersion == downloadedVersion
+					&& downloadedVersion > localVersion) {
+				startJar(DOWNLOADED_FILE.getAbsolutePath());
 			} else {
+
 				System.out.println("Starting local version.");
 				startLocal();
 			}
