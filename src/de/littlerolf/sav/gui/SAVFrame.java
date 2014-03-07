@@ -205,11 +205,12 @@ public class SAVFrame extends JFrame {
 	private void onStartSimulationButtonPressed() {
 		BaseSorter sorter = sorters.get(this.sorterComboBox.getSelectedIndex());
 		sorter.getHistory().clear();
-
+		ProgressFrame pFrame = new ProgressFrame();
+		pFrame.setVisible(true);
 		int[] testingArray = generateTestingArray();
 
 		int[] benchmarkResults = new int[BENCHMARK_RUNS];
-
+		pFrame.setMaximum(BENCHMARK_RUNS);
 		for (int i = 0; i < benchmarkResults.length; i++) {
 			sorter.getHistory().clear();
 			int[] testingArrayReal = testingArray.clone();
@@ -217,7 +218,9 @@ public class SAVFrame extends JFrame {
 			long start = System.nanoTime();
 			sorter.sortArray(testingArrayReal);
 			benchmarkResults[i] = (int) ((System.nanoTime() - start) / 1000);
+			pFrame.setValue(i);
 		}
+		pFrame.setVisible(false);
 
 		double averageSpeed = 0;
 
