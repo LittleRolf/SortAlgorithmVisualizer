@@ -70,6 +70,8 @@ public class SortAlgorithmVisualizer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
 		}
 		return -1;
 	}
