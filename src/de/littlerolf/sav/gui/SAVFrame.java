@@ -24,6 +24,7 @@ import java.awt.event.ItemListener;
 
 import de.littlerolf.sav.data.BaseSorter;
 import de.littlerolf.sav.loader.SorterLoader;
+import java.awt.Font;
 
 public class SAVFrame extends JFrame {
 	/**
@@ -56,7 +57,7 @@ public class SAVFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
-		setSize(1007, 455);
+		setSize(1007, 414);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
 				/ 2 - this.getSize().height / 2);
@@ -68,18 +69,18 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.onStartSimulationButtonPressed();
 			}
 		});
-		btnSimulieren.setBounds(10, 312, 215, 29);
+		btnSimulieren.setBounds(10, 312, 139, 23);
 		getContentPane().add(btnSimulieren);
 		disableMe.add(btnSimulieren);
 
 		sorterComboBox = new JComboBox();
-		sorterComboBox.setBounds(703, 333, 294, 28);
+		sorterComboBox.setBounds(703, 321, 183, 28);
 		getContentPane().add(sorterComboBox);
 		disableMe.add(sorterComboBox);
 
 		final JSlider slider = new JSlider();
 		slider.setToolTipText("gemessen in Fischbr\u00F6tchen pro Sekunde");
-		slider.setBounds(455, 311, 156, 80);
+		slider.setBounds(510, 311, 183, 63);
 		getContentPane().add(slider);
 		slider.setMinimum(1);
 		slider.setMaximum(3000);
@@ -98,11 +99,12 @@ public class SAVFrame extends JFrame {
 		});
 
 		JLabel lblGeschwindigkeit = new JLabel("Geschwindigkeit:");
-		lblGeschwindigkeit.setBounds(455, 295, 156, 14);
+		lblGeschwindigkeit.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblGeschwindigkeit.setBounds(510, 295, 156, 14);
 		getContentPane().add(lblGeschwindigkeit);
 
 		final JToggleButton chkPause = new JToggleButton("Pause");
-		chkPause.setBounds(623, 330, 70, 30);
+		chkPause.setBounds(159, 312, 66, 23);
 		getContentPane().add(chkPause);
 		chkPause.addItemListener(new ItemListener() {
 
@@ -116,60 +118,66 @@ public class SAVFrame extends JFrame {
 		btnNextStep = new JButton("Schritt vor");
 		btnNextStep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SAVFrame.this.SimulationNextStep();
+				SAVFrame.this.doSimulationNextStep();
 			}
 		});
-		btnNextStep.setBounds(585, 395, 105, 30);
+		btnNextStep.setBounds(125, 346, 100, 23);
 		getContentPane().add(btnNextStep);
-		btnNextStep.setEnabled(false);;
-		
+		btnNextStep.setEnabled(false);
+		;
+
 		btnLastStep = new JButton("Schritt zur\u00fcck");
 		btnLastStep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SAVFrame.this.SimulationLastStep();
+				SAVFrame.this.doSimulationLastStep();
 			}
 		});
-		btnLastStep.setBounds(455, 395, 125, 30);
+		btnLastStep.setBounds(10, 346, 105, 23);
 		getContentPane().add(btnLastStep);
-		btnLastStep.setEnabled(false);;
+		btnLastStep.setEnabled(false);
+		;
 
 		JLabel lblImplementation = new JLabel("Implementation:");
-		lblImplementation.setBounds(703, 307, 117, 14);
+		lblImplementation.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblImplementation.setBounds(703, 295, 117, 14);
 		getContentPane().add(lblImplementation);
 
 		JLabel lblKontrolle = new JLabel("Kontrolle:");
+		lblKontrolle.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblKontrolle.setBounds(10, 295, 89, 14);
 		getContentPane().add(lblKontrolle);
 
 		JLabel lblSchritte = new JLabel("Schritte:");
 		lblSchritte.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblSchritte.setBounds(228, 327, 154, 14);
+		lblSchritte.setBounds(329, 327, 90, 14);
 		getContentPane().add(lblSchritte);
 
 		lblStepAmount = new JLabel("0");
-		lblStepAmount.setBounds(394, 326, 69, 14);
+		lblStepAmount.setBounds(431, 326, 69, 14);
 		getContentPane().add(lblStepAmount);
 
 		JLabel lblAktuellerSchritte = new JLabel("Aktueller Schritt:");
 		lblAktuellerSchritte.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblAktuellerSchritte.setBounds(228, 313, 154, 14);
+		lblAktuellerSchritte.setBounds(319, 313, 100, 14);
 		getContentPane().add(lblAktuellerSchritte);
 
 		lblCurrentStep = new JLabel("0");
-		lblCurrentStep.setBounds(394, 312, 69, 14);
+		lblCurrentStep.setBounds(431, 312, 69, 14);
 		getContentPane().add(lblCurrentStep);
 
 		JLabel lblStatistik = new JLabel("Statistik:");
-		lblStatistik.setBounds(228, 295, 75, 14);
+		lblStatistik.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblStatistik.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblStatistik.setBounds(344, 295, 75, 14);
 		getContentPane().add(lblStatistik);
 
 		JLabel lblGeschwindigkeit_1 = new JLabel("Ø Geschwindigkeit:");
 		lblGeschwindigkeit_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblGeschwindigkeit_1.setBounds(228, 342, 154, 14);
+		lblGeschwindigkeit_1.setBounds(319, 342, 100, 14);
 		getContentPane().add(lblGeschwindigkeit_1);
 
 		lblSpeed = new JLabel("0s");
-		lblSpeed.setBounds(394, 341, 69, 14);
+		lblSpeed.setBounds(431, 341, 69, 14);
 		getContentPane().add(lblSpeed);
 
 		JScrollPane scrollPane = new JScrollPane();
@@ -180,7 +188,7 @@ public class SAVFrame extends JFrame {
 		scrollPane.setViewportView(historyComponent);
 
 		JButton btnRefresh = new JButton("Neu laden");
-		btnRefresh.setBounds(830, 301, 167, 29);
+		btnRefresh.setBounds(896, 321, 95, 28);
 		getContentPane().add(btnRefresh);
 		btnRefresh.addActionListener(new ActionListener() {
 
@@ -280,7 +288,7 @@ public class SAVFrame extends JFrame {
 					e.printStackTrace();
 				}
 				if (SAVFrame.this.isSimulationRunning) {
-					SAVFrame.this.historyComponent.nextStep();
+					SAVFrame.this.historyComponent.doNextStep();
 					SAVFrame.this.onSteppingProgress(
 							SAVFrame.this.historyComponent.getCurrentStep(),
 							SAVFrame.this.historyComponent.getHistoryItems()
@@ -304,18 +312,18 @@ public class SAVFrame extends JFrame {
 		lblCurrentStep.setText(progress + 1 + "");
 	}
 
-	public void SimulationNextStep() {
+	public void doSimulationNextStep() {
 		if (!isSimulationRunning) {
-			SAVFrame.this.historyComponent.nextStep();
+			SAVFrame.this.historyComponent.doNextStep();
 			SAVFrame.this.onSteppingProgress(
 					SAVFrame.this.historyComponent.getCurrentStep(),
 					SAVFrame.this.historyComponent.getHistoryItems().size());
 		}
 	}
-	
-	public void SimulationLastStep() {
+
+	public void doSimulationLastStep() {
 		if (!isSimulationRunning) {
-			SAVFrame.this.historyComponent.lastStep();
+			SAVFrame.this.historyComponent.doPreviousStep();
 			SAVFrame.this.onSteppingProgress(
 					SAVFrame.this.historyComponent.getCurrentStep(),
 					SAVFrame.this.historyComponent.getHistoryItems().size());
