@@ -6,10 +6,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.jar.JarFile;
@@ -21,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import de.littlerolf.sav.gui.ProgressFrame;
 import de.littlerolf.sav.gui.SAVFrame;
 
 public class SortAlgorithmVisualizer {
@@ -39,7 +42,7 @@ public class SortAlgorithmVisualizer {
 			if (remoteVersion > downloadedVersion
 					&& remoteVersion > localVersion) {
 				System.out.println("Starting remote version.");
-				startJar(downloadRemoteJar().getAbsolutePath());
+				downloadAndStartRemoteJar();
 			} else if (downloadedVersion > remoteVersion
 					&& downloadedVersion > localVersion) {
 				System.out.println("Starting cached version.");
@@ -49,11 +52,41 @@ public class SortAlgorithmVisualizer {
 				startLocal();
 			}
 		}
+
 		/*
 		 * if (getLocalVersion() > -1) { if (isRemoteNewer()) {
 		 * startJar(downloadRemoteJar().getAbsolutePath()); } else {
 		 * startLocal(); } } else { startLocal(); }
 		 */
+	}
+
+	private static void downloadAndStartRemoteJar() {
+		final ProgressFrame frame = new ProgressFrame();
+		frame.setVisible(true);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				downloadRemoteJar(new DownloadListener() {
+
+					@Override
+					public void onDownloadProgress(int value, int max) {
+						frame.setMaximum(100);
+						frame.setMinimum(0);
+						frame.setValue(value);
+					}
+
+					@Override
+					public void onDownloadFinished(File f) {
+						frame.setVisible(false);
+						startJar(f.getAbsolutePath());
+					}
+
+				});
+
+			}
+		}).start();
+
 	}
 
 	private static int getLocalVersion() {
@@ -130,7 +163,13 @@ public class SortAlgorithmVisualizer {
 		return -1;
 	}
 
-	private static File downloadRemoteJar() {
+	interface DownloadListener {
+		public void onDownloadProgress(int value, int max);
+
+		public void onDownloadFinished(File f);
+	}
+
+	private static File downloadRemoteJar(DownloadListener l) {
 		System.out.println("Downloading remote jar.");
 		File f = DOWNLOADED_FILE;
 		f.getParentFile().mkdirs();
@@ -138,10 +177,13 @@ public class SortAlgorithmVisualizer {
 		try {
 			website = new URL(SERVER_URL + "jar/SAV.jar");
 
-			ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+			ReadableByteChannel rbc = new RBCWrapper(
+					Channels.newChannel(website.openStream()),
+					getContentLength(website), l);
 			FileOutputStream fos = new FileOutputStream(f);
 			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 			fos.close();
+			l.onDownloadFinished(f);
 			return f;
 
 		} catch (MalformedURLException e) {
@@ -150,6 +192,23 @@ public class SortAlgorithmVisualizer {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private static int getContentLength(URL url) {
+		HttpURLConnection connection;
+		int contentLength = -1;
+
+		try {
+			HttpURLConnection.setFollowRedirects(false);
+
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("HEAD");
+
+			contentLength = connection.getContentLength();
+		} catch (Exception e) {
+		}
+
+		return contentLength;
 	}
 
 	private static void startJar(String path) {
@@ -218,6 +277,42 @@ public class SortAlgorithmVisualizer {
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
+		}
+	}
+
+	private static final class RBCWrapper implements ReadableByteChannel {
+		private DownloadListener delegate;
+		private long expectedSize;
+		private ReadableByteChannel rbc;
+		private long readSoFar;
+
+		RBCWrapper(ReadableByteChannel rbc, long expectedSize,
+				DownloadListener delegate) {
+			this.delegate = delegate;
+			this.expectedSize = expectedSize;
+			this.rbc = rbc;
+		}
+
+		public void close() throws IOException {
+			rbc.close();
+		}
+
+		public boolean isOpen() {
+			return rbc.isOpen();
+		}
+
+		public int read(ByteBuffer bb) throws IOException {
+			int n;
+			double progress;
+
+			if ((n = rbc.read(bb)) > 0) {
+				readSoFar += n;
+				progress = expectedSize > 0 ? (double) readSoFar
+						/ (double) expectedSize * 100.0 : -1.0;
+				delegate.onDownloadProgress((int) progress, (int) expectedSize);
+			}
+
+			return n;
 		}
 	}
 }
