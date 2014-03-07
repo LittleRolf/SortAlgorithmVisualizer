@@ -100,7 +100,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblGeschwindigkeit);
 
 		final JCheckBox chkPause = new JCheckBox("Pause");
-		chkPause.setBounds(623, 320, 90, 30);
+		chkPause.setBounds(623, 320, 70, 30);
 		getContentPane().add(chkPause);
 		chkPause.addItemListener(new ItemListener() {
 
