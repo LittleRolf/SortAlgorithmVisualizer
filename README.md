@@ -23,6 +23,11 @@ public class Sorter extends BaseSorter {
 	}
 }
 ```
+
+Note that the package name must not contain any othe character than a-z & A-Z. So package name `com.epicsort.sort` is invalid, but `epicsort` would be valid.
+
+In the main program, select the folder, where all the package folders containing the Sorter.class files are.
+
 #License
 MIT
 
