@@ -28,7 +28,7 @@ public class ArrayCustomizationFrame extends JFrame {
 
 		setTitle("Array Anpassung");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 200, 251);
+		setBounds(100, 100, 210, 130);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -41,7 +41,7 @@ public class ArrayCustomizationFrame extends JFrame {
 						SAVFrame.ArrayOption.REVERSE_ARRAY, ((JCheckBox) e.getSource()).isSelected());
 			}
 		});
-		chckbxArrayUmdrehen.setBounds(8, 35, 139, 23);
+		chckbxArrayUmdrehen.setBounds(8, 35, 190, 23);
 		chckbxArrayUmdrehen
 		.setSelected(ArrayCustomizationFrame.this.parent.arrayOptions
 				.get(SAVFrame.ArrayOption.REVERSE_ARRAY));
@@ -54,7 +54,7 @@ public class ArrayCustomizationFrame extends JFrame {
 						SAVFrame.ArrayOption.PRESORT_ARRAY, ((JCheckBox) arg0.getSource()).isSelected());
 			}
 		});
-		chckbxArrayVorsortiert.setBounds(8, 8, 143, 23);
+		chckbxArrayVorsortiert.setBounds(8, 8, 190, 23);
 		chckbxArrayVorsortiert
 				.setSelected(ArrayCustomizationFrame.this.parent.arrayOptions
 						.get(SAVFrame.ArrayOption.PRESORT_ARRAY));
@@ -67,7 +67,7 @@ public class ArrayCustomizationFrame extends JFrame {
 				ArrayCustomizationFrame.this.dispose();
 			}
 		});
-		btnOk.setBounds(12, 192, 176, 25);
+		btnOk.setBounds(8, 66, 190, 25);
 		contentPane.add(btnOk);
 	}
 
