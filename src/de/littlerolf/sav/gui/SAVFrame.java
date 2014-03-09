@@ -256,6 +256,7 @@ public class SAVFrame extends JFrame {
 			pFrame.setValue(i);
 		}
 		pFrame.setVisible(false);
+		pFrame.dispose();
 
 		double averageSpeed = 0;
 
@@ -271,7 +272,6 @@ public class SAVFrame extends JFrame {
 
 		historyComponent.repaint();
 
-		pFrame.setVisible(false);
 
 		currentSteppingThread = new SteppingThread();
 		currentSteppingThread.start();
