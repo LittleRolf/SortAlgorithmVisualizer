@@ -274,36 +274,7 @@ public class SAVFrame extends JFrame {
 					}
 				});
 		sim.kickOffSimulation();
-		/*
-		 * int[] testingArray = generateTestingArray();
-		 * 
-		 * int[] benchmarkResults = new int[BENCHMARK_RUNS];
-		 * pFrame.setMaximum(BENCHMARK_RUNS); for (int i = 0; i <
-		 * benchmarkResults.length; i++) { sorter.getHistory().clear(); int[]
-		 * testingArrayReal = testingArray.clone(); // Wohoo, sorting! long
-		 * start = System.nanoTime(); sorter.sortArray(testingArrayReal);
-		 * benchmarkResults[i] = (int) ((System.nanoTime() - start) / 1000);
-		 * pFrame.setValue(i); } pFrame.setVisible(false); pFrame.dispose();
-		 * 
-		 * double averageSpeed = 0;
-		 * 
-		 * for (int i = 0; i < benchmarkResults.length; i++) averageSpeed +=
-		 * benchmarkResults[i]; averageSpeed /= benchmarkResults.length;
-		 */
 
-		// lblSpeed.setText(averageSpeed + "µs");
-		//
-		// historyComponent.getHistoryItems().clear();
-		// historyComponent.getHistoryItems().addAll(sorter.getHistory());
-		// historyComponent.reset();
-		//
-		// historyComponent.repaint();
-
-		// currentSteppingThread = new SteppingThread();
-		// currentSteppingThread.start();
-
-		for (JComponent c : disableMe)
-			c.setEnabled(false);
 	}
 
 	private int[] generateTestingArray() {
