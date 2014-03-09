@@ -19,6 +19,7 @@ public class ProgressFrame extends JFrame {
 		progressBar.setStringPainted(true);
 		getContentPane().add(progressBar, BorderLayout.CENTER);
 		this.setSize(400, 100);
+		this.setAlwaysOnTop(true);
 	}
 
 	public void setString(String s) {

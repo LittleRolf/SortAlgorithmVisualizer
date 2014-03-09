@@ -1,9 +1,12 @@
 package de.littlerolf.sav.gui;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,25 +25,22 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
 import de.littlerolf.sav.data.BaseSorter;
 import de.littlerolf.sav.loader.SorterLoader;
-
-import java.awt.Font;
+import de.littlerolf.sav.simulation.AlgorithmSimulator;
+import de.littlerolf.sav.simulation.SimulationListener;
 
 public class SAVFrame extends JFrame {
 	/**
 	 * 
 	 */
-	
+
 	public enum ArrayOption {
 		REVERSE_ARRAY, PRESORT_ARRAY
 	};
-	
+
 	public HashMap<ArrayOption, Boolean> arrayOptions = new HashMap<ArrayOption, Boolean>();
-	
+
 	private static final long serialVersionUID = -3474914946760719462L;
 
 	public static final int BENCHMARK_RUNS = 10;
@@ -64,11 +64,11 @@ public class SAVFrame extends JFrame {
 	private SorterLoader sorterLoader;
 
 	public SAVFrame(String path) {
-		for(ArrayOption o : ArrayOption.values()) {
+		for (ArrayOption o : ArrayOption.values()) {
 			arrayOptions.put(o, false);
 		}
 		sorterLoader = new SorterLoader(path);
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
@@ -139,7 +139,6 @@ public class SAVFrame extends JFrame {
 		btnNextStep.setBounds(125, 346, 100, 23);
 		getContentPane().add(btnNextStep);
 		btnNextStep.setEnabled(false);
-		
 
 		btnLastStep = new JButton("Schritt zur\u00fcck");
 		btnLastStep.addActionListener(new ActionListener() {
@@ -150,7 +149,6 @@ public class SAVFrame extends JFrame {
 		btnLastStep.setBounds(10, 346, 105, 23);
 		getContentPane().add(btnLastStep);
 		btnLastStep.setEnabled(false);
-		
 
 		JLabel lblImplementation = new JLabel("Implementation:");
 		lblImplementation.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -213,7 +211,7 @@ public class SAVFrame extends JFrame {
 			}
 		});
 		disableMe.add(btnRefresh);
-		
+
 		JButton btnArrayCustomization = new JButton("Array Anpassung");
 		btnArrayCustomization.setBounds(703, 355, 150, 28);
 		getContentPane().add(btnArrayCustomization);
@@ -232,49 +230,77 @@ public class SAVFrame extends JFrame {
 	private void showArrayCustomizationDialog() {
 		ArrayCustomizationFrame acf = new ArrayCustomizationFrame(this);
 		acf.setVisible(true);
-		
-	}
-	
 
+	}
 
 	private void onStartSimulationButtonPressed() {
-		BaseSorter sorter = sorters.get(this.sorterComboBox.getSelectedIndex());
+		final BaseSorter sorter = sorters.get(this.sorterComboBox
+				.getSelectedIndex());
 		sorter.getHistory().clear();
-		ProgressFrame pFrame = new ProgressFrame();
-		pFrame.setVisible(true);
-		int[] testingArray = generateTestingArray();
+		final ProgressFrame pFrame = new ProgressFrame();
 
-		int[] benchmarkResults = new int[BENCHMARK_RUNS];
-		pFrame.setMaximum(BENCHMARK_RUNS);
-		for (int i = 0; i < benchmarkResults.length; i++) {
-			sorter.getHistory().clear();
-			int[] testingArrayReal = testingArray.clone();
-			// Wohoo, sorting!
-			long start = System.nanoTime();
-			sorter.sortArray(testingArrayReal);
-			benchmarkResults[i] = (int) ((System.nanoTime() - start) / 1000);
-			pFrame.setValue(i);
-		}
-		pFrame.setVisible(false);
-		pFrame.dispose();
+		AlgorithmSimulator sim = new AlgorithmSimulator(sorter, BENCHMARK_RUNS,
+				generateTestingArray(), new SimulationListener() {
 
-		double averageSpeed = 0;
+					@Override
+					public void onSimulationStarted() {
+						pFrame.setVisible(true);
+					}
 
-		for (int i = 0; i < benchmarkResults.length; i++)
-			averageSpeed += benchmarkResults[i];
-		averageSpeed /= benchmarkResults.length;
+					@Override
+					public void onSimulationProgress(int progress, int max) {
+						pFrame.setValue(progress + 1);
+						pFrame.setMaximum(max);
+					}
 
-		lblSpeed.setText(averageSpeed + "µs");
+					@Override
+					public void onSimulationFinished(double averageSpeed,
+							int[] sortedArray) {
+						lblSpeed.setText(averageSpeed + "µs");
+						historyComponent.getHistoryItems().clear();
+						historyComponent.getHistoryItems().addAll(
+								sorter.getHistory());
+						historyComponent.reset();
 
-		historyComponent.getHistoryItems().clear();
-		historyComponent.getHistoryItems().addAll(sorter.getHistory());
-		historyComponent.reset();
+						historyComponent.repaint();
+						currentSteppingThread = new SteppingThread();
+						currentSteppingThread.start();
 
-		historyComponent.repaint();
+						for (JComponent c : disableMe)
+							c.setEnabled(false);
 
+						pFrame.setVisible(false);
+						pFrame.dispose();
+					}
+				});
+		sim.kickOffSimulation();
+		/*
+		 * int[] testingArray = generateTestingArray();
+		 * 
+		 * int[] benchmarkResults = new int[BENCHMARK_RUNS];
+		 * pFrame.setMaximum(BENCHMARK_RUNS); for (int i = 0; i <
+		 * benchmarkResults.length; i++) { sorter.getHistory().clear(); int[]
+		 * testingArrayReal = testingArray.clone(); // Wohoo, sorting! long
+		 * start = System.nanoTime(); sorter.sortArray(testingArrayReal);
+		 * benchmarkResults[i] = (int) ((System.nanoTime() - start) / 1000);
+		 * pFrame.setValue(i); } pFrame.setVisible(false); pFrame.dispose();
+		 * 
+		 * double averageSpeed = 0;
+		 * 
+		 * for (int i = 0; i < benchmarkResults.length; i++) averageSpeed +=
+		 * benchmarkResults[i]; averageSpeed /= benchmarkResults.length;
+		 */
 
-		currentSteppingThread = new SteppingThread();
-		currentSteppingThread.start();
+		// lblSpeed.setText(averageSpeed + "µs");
+		//
+		// historyComponent.getHistoryItems().clear();
+		// historyComponent.getHistoryItems().addAll(sorter.getHistory());
+		// historyComponent.reset();
+		//
+		// historyComponent.repaint();
+
+		// currentSteppingThread = new SteppingThread();
+		// currentSteppingThread.start();
 
 		for (JComponent c : disableMe)
 			c.setEnabled(false);
@@ -288,13 +314,12 @@ public class SAVFrame extends JFrame {
 		for (int i = 0; i < values.length; i++)
 			values[i] = r.nextInt(SAVHistoryComponent.PLAYING_CARD_AMOUNT);
 
-		
-		if(arrayOptions.get(ArrayOption.PRESORT_ARRAY)) {
+		if (arrayOptions.get(ArrayOption.PRESORT_ARRAY)) {
 			Arrays.sort(values);
 		}
-		if(arrayOptions.get(ArrayOption.REVERSE_ARRAY)) {
+		if (arrayOptions.get(ArrayOption.REVERSE_ARRAY)) {
 			System.out.println(Arrays.toString(values));
-			for(int i = 0; i < values.length / 2 ; i++) {
+			for (int i = 0; i < values.length / 2; i++) {
 				int temp = values[i];
 				values[i] = values[values.length - i - 1];
 				values[values.length - i - 1] = temp;
