@@ -13,11 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
@@ -35,12 +37,6 @@ public class SAVFrame extends JFrame {
 	 * 
 	 */
 
-	public enum ArrayOption {
-		REVERSE_ARRAY, PRESORT_ARRAY
-	};
-
-	public HashMap<ArrayOption, Boolean> arrayOptions = new HashMap<ArrayOption, Boolean>();
-
 	private static final long serialVersionUID = -3474914946760719462L;
 
 	public static final int BENCHMARK_RUNS = 10;
@@ -53,6 +49,9 @@ public class SAVFrame extends JFrame {
 	private JLabel lblSpeed;
 	private JButton btnNextStep;
 	private JButton btnLastStep;
+	private JRadioButton rdbtnRandom;
+	private JRadioButton rdbtnSorted;
+	private JRadioButton rdbtnReverse;
 
 	private SAVHistoryComponent historyComponent;
 	private int currentSpeed = 1500;
@@ -64,15 +63,12 @@ public class SAVFrame extends JFrame {
 	private SorterLoader sorterLoader;
 
 	public SAVFrame(String path) {
-		for (ArrayOption o : ArrayOption.values()) {
-			arrayOptions.put(o, false);
-		}
 		sorterLoader = new SorterLoader(path);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
-		setSize(1007, 414);
+		setSize(1007, 419);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
 				/ 2 - this.getSize().height / 2);
@@ -84,12 +80,12 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.onStartSimulationButtonPressed();
 			}
 		});
-		btnSimulieren.setBounds(10, 312, 139, 23);
+		btnSimulieren.setBounds(10, 317, 89, 23);
 		getContentPane().add(btnSimulieren);
 		disableMe.add(btnSimulieren);
 
 		sorterComboBox = new JComboBox();
-		sorterComboBox.setBounds(703, 321, 183, 28);
+		sorterComboBox.setBounds(703, 320, 183, 28);
 		getContentPane().add(sorterComboBox);
 		disableMe.add(sorterComboBox);
 
@@ -119,7 +115,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblGeschwindigkeit);
 
 		final JToggleButton chkPause = new JToggleButton("Pause");
-		chkPause.setBounds(159, 312, 66, 23);
+		chkPause.setBounds(109, 317, 75, 23);
 		getContentPane().add(chkPause);
 		chkPause.addItemListener(new ItemListener() {
 
@@ -130,23 +126,23 @@ public class SAVFrame extends JFrame {
 			}
 		});
 
-		btnNextStep = new JButton("Schritt vor");
+		btnNextStep = new JButton("Vor");
 		btnNextStep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SAVFrame.this.doSimulationNextStep();
 			}
 		});
-		btnNextStep.setBounds(125, 346, 100, 23);
+		btnNextStep.setBounds(102, 351, 82, 23);
 		getContentPane().add(btnNextStep);
 		btnNextStep.setEnabled(false);
 
-		btnLastStep = new JButton("Schritt zur\u00fcck");
+		btnLastStep = new JButton("Zurück");
 		btnLastStep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SAVFrame.this.doSimulationLastStep();
 			}
 		});
-		btnLastStep.setBounds(10, 346, 105, 23);
+		btnLastStep.setBounds(10, 351, 82, 23);
 		getContentPane().add(btnLastStep);
 		btnLastStep.setEnabled(false);
 
@@ -162,20 +158,20 @@ public class SAVFrame extends JFrame {
 
 		JLabel lblSchritte = new JLabel("Schritte:");
 		lblSchritte.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblSchritte.setBounds(329, 327, 90, 14);
+		lblSchritte.setBounds(329, 335, 90, 14);
 		getContentPane().add(lblSchritte);
 
 		lblStepAmount = new JLabel("0");
-		lblStepAmount.setBounds(431, 326, 69, 14);
+		lblStepAmount.setBounds(431, 334, 69, 14);
 		getContentPane().add(lblStepAmount);
 
 		JLabel lblAktuellerSchritte = new JLabel("Aktueller Schritt:");
 		lblAktuellerSchritte.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblAktuellerSchritte.setBounds(319, 313, 100, 14);
+		lblAktuellerSchritte.setBounds(319, 321, 100, 14);
 		getContentPane().add(lblAktuellerSchritte);
 
 		lblCurrentStep = new JLabel("0");
-		lblCurrentStep.setBounds(431, 312, 69, 14);
+		lblCurrentStep.setBounds(431, 320, 69, 14);
 		getContentPane().add(lblCurrentStep);
 
 		JLabel lblStatistik = new JLabel("Statistik:");
@@ -186,11 +182,11 @@ public class SAVFrame extends JFrame {
 
 		JLabel lblGeschwindigkeit_1 = new JLabel("Ø Geschwindigkeit:");
 		lblGeschwindigkeit_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblGeschwindigkeit_1.setBounds(319, 342, 100, 14);
+		lblGeschwindigkeit_1.setBounds(319, 350, 100, 14);
 		getContentPane().add(lblGeschwindigkeit_1);
 
 		lblSpeed = new JLabel("0s");
-		lblSpeed.setBounds(431, 341, 69, 14);
+		lblSpeed.setBounds(431, 349, 69, 14);
 		getContentPane().add(lblSpeed);
 
 		JScrollPane scrollPane = new JScrollPane();
@@ -201,7 +197,7 @@ public class SAVFrame extends JFrame {
 		scrollPane.setViewportView(historyComponent);
 
 		JButton btnRefresh = new JButton("Neu laden");
-		btnRefresh.setBounds(896, 321, 95, 28);
+		btnRefresh.setBounds(896, 320, 95, 28);
 		getContentPane().add(btnRefresh);
 		btnRefresh.addActionListener(new ActionListener() {
 
@@ -212,25 +208,33 @@ public class SAVFrame extends JFrame {
 		});
 		disableMe.add(btnRefresh);
 
-		JButton btnArrayCustomization = new JButton("Array Anpassung");
-		btnArrayCustomization.setBounds(703, 355, 150, 28);
-		getContentPane().add(btnArrayCustomization);
-		btnArrayCustomization.addActionListener(new ActionListener() {
+		ButtonGroup arrayModeGroup = new ButtonGroup();
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SAVFrame.this.showArrayCustomizationDialog();
-			}
-		});
-		disableMe.add(btnArrayCustomization);
+		rdbtnRandom = new JRadioButton("Zufällig");
+		rdbtnRandom.setSelected(true);
+		rdbtnRandom.setBounds(214, 312, 82, 23);
+		getContentPane().add(rdbtnRandom);
+		arrayModeGroup.add(rdbtnRandom);
+		disableMe.add(rdbtnRandom);
+
+		rdbtnSorted = new JRadioButton("Best Case");
+		rdbtnSorted.setBounds(214, 335, 82, 23);
+		getContentPane().add(rdbtnSorted);
+		arrayModeGroup.add(rdbtnSorted);
+		disableMe.add(rdbtnSorted);
+
+		rdbtnReverse = new JRadioButton("Worst Case");
+		rdbtnReverse.setBounds(214, 357, 82, 23);
+		getContentPane().add(rdbtnReverse);
+		arrayModeGroup.add(rdbtnReverse);
+		disableMe.add(rdbtnReverse);
+
+		JLabel lblArrayInhalt = new JLabel("Array Inhalt:");
+		lblArrayInhalt.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblArrayInhalt.setBounds(214, 295, 82, 14);
+		getContentPane().add(lblArrayInhalt);
 
 		reloadSorters();
-	}
-
-	private void showArrayCustomizationDialog() {
-		ArrayCustomizationFrame acf = new ArrayCustomizationFrame(this);
-		acf.setVisible(true);
-
 	}
 
 	private void onStartSimulationButtonPressed() {
@@ -285,17 +289,15 @@ public class SAVFrame extends JFrame {
 		for (int i = 0; i < values.length; i++)
 			values[i] = r.nextInt(SAVHistoryComponent.PLAYING_CARD_AMOUNT);
 
-		if (arrayOptions.get(ArrayOption.PRESORT_ARRAY)) {
+		if (this.rdbtnSorted.isSelected()) {
 			Arrays.sort(values);
-		}
-		if (arrayOptions.get(ArrayOption.REVERSE_ARRAY)) {
-			System.out.println(Arrays.toString(values));
+		} else if (this.rdbtnReverse.isSelected()) {
+			Arrays.sort(values);
 			for (int i = 0; i < values.length / 2; i++) {
 				int temp = values[i];
 				values[i] = values[values.length - i - 1];
 				values[values.length - i - 1] = temp;
 			}
-			System.out.println(Arrays.toString(values));
 		}
 		return values;
 	}
@@ -378,5 +380,4 @@ public class SAVFrame extends JFrame {
 					SAVFrame.this.historyComponent.getHistoryItems().size());
 		}
 	}
-
 }
