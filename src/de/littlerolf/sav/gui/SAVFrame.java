@@ -80,7 +80,7 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.onStartSimulationButtonPressed();
 			}
 		});
-		btnSimulieren.setBounds(10, 317, 89, 23);
+		btnSimulieren.setBounds(10, 312, 100, 28);
 		getContentPane().add(btnSimulieren);
 		disableMe.add(btnSimulieren);
 
@@ -115,7 +115,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblGeschwindigkeit);
 
 		final JToggleButton chkPause = new JToggleButton("Pause");
-		chkPause.setBounds(109, 317, 75, 23);
+		chkPause.setBounds(109, 312, 75, 28);
 		getContentPane().add(chkPause);
 		chkPause.addItemListener(new ItemListener() {
 
@@ -132,7 +132,7 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.doSimulationNextStep();
 			}
 		});
-		btnNextStep.setBounds(102, 351, 82, 23);
+		btnNextStep.setBounds(102, 352, 75, 22);
 		getContentPane().add(btnNextStep);
 		btnNextStep.setEnabled(false);
 
@@ -142,7 +142,7 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.doSimulationLastStep();
 			}
 		});
-		btnLastStep.setBounds(10, 351, 82, 23);
+		btnLastStep.setBounds(20, 352, 72, 22);
 		getContentPane().add(btnLastStep);
 		btnLastStep.setEnabled(false);
 
