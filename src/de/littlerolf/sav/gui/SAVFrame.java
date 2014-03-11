@@ -55,6 +55,7 @@ public class SAVFrame extends JFrame {
 
 	private SAVHistoryComponent historyComponent;
 	private int currentSpeed = 1500;
+	private int arraySize = 10;
 	private boolean isSimulationRunning = true;
 	private SteppingThread currentSteppingThread;
 
@@ -218,16 +219,36 @@ public class SAVFrame extends JFrame {
 		disableMe.add(rdbtnRandom);
 
 		rdbtnSorted = new JRadioButton("Best Case");
-		rdbtnSorted.setBounds(817, 186, 117, 23);
+		rdbtnSorted.setBounds(817, 179, 117, 23);
 		getContentPane().add(rdbtnSorted);
 		arrayModeGroup.add(rdbtnSorted);
 		disableMe.add(rdbtnSorted);
 
 		rdbtnReverse = new JRadioButton("Worst Case");
-		rdbtnReverse.setBounds(817, 221, 117, 23);
+		rdbtnReverse.setBounds(817, 207, 117, 23);
 		getContentPane().add(rdbtnReverse);
 		arrayModeGroup.add(rdbtnReverse);
 		disableMe.add(rdbtnReverse);
+		
+		final JSlider arraySizeSlider = new JSlider();
+		
+		arraySizeSlider.setBounds(787, 235, 200, 63);
+		getContentPane().add(arraySizeSlider);
+		arraySizeSlider.setMinimum(5);
+		arraySizeSlider.setMaximum(50);
+		arraySizeSlider.setValue(10);
+		arraySizeSlider.setMajorTickSpacing(10);
+		arraySizeSlider.setMinorTickSpacing(1);
+		arraySizeSlider.setPaintTicks(true);
+		arraySizeSlider.setPaintLabels(true);
+		arraySizeSlider.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				SAVFrame.this.arraySize = arraySizeSlider.getValue();
+			}
+
+		});
 
 		JLabel lblArrayInhalt = new JLabel("Array Inhalt:");
 		lblArrayInhalt.setHorizontalAlignment(SwingConstants.LEFT);
@@ -285,7 +306,7 @@ public class SAVFrame extends JFrame {
 	private int[] generateTestingArray() {
 		Random r = new Random();
 
-		int[] values = new int[r.nextInt(15) + 5];
+		int[] values = new int[arraySize];
 
 		for (int i = 0; i < values.length; i++)
 			values[i] = r.nextInt(SAVHistoryComponent.PLAYING_CARD_AMOUNT);
