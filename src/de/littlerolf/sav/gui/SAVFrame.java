@@ -31,6 +31,8 @@ import de.littlerolf.sav.data.BaseSorter;
 import de.littlerolf.sav.loader.SorterLoader;
 import de.littlerolf.sav.simulation.AlgorithmSimulator;
 import de.littlerolf.sav.simulation.SimulationListener;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class SAVFrame extends JFrame {
 	/**
@@ -52,10 +54,10 @@ public class SAVFrame extends JFrame {
 	private JRadioButton rdbtnRandom;
 	private JRadioButton rdbtnSorted;
 	private JRadioButton rdbtnReverse;
+	private JSpinner spinnerArraySize;
 
 	private SAVHistoryComponent historyComponent;
 	private int currentSpeed = 1500;
-	private int arraySize = 10;
 	private boolean isSimulationRunning = true;
 	private SteppingThread currentSteppingThread;
 
@@ -112,7 +114,7 @@ public class SAVFrame extends JFrame {
 
 		JLabel lblGeschwindigkeit = new JLabel("Geschwindigkeit:");
 		lblGeschwindigkeit.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblGeschwindigkeit.setBounds(263, 295, 430, 14);
+		lblGeschwindigkeit.setBounds(263, 295, 380, 14);
 		getContentPane().add(lblGeschwindigkeit);
 
 		final JToggleButton chkPause = new JToggleButton("Pause");
@@ -133,7 +135,7 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.doSimulationNextStep();
 			}
 		});
-		btnNextStep.setBounds(145, 345, 106, 22);
+		btnNextStep.setBounds(145, 345, 106, 29);
 		getContentPane().add(btnNextStep);
 		btnNextStep.setEnabled(false);
 
@@ -143,13 +145,13 @@ public class SAVFrame extends JFrame {
 				SAVFrame.this.doSimulationLastStep();
 			}
 		});
-		btnLastStep.setBounds(10, 345, 123, 22);
+		btnLastStep.setBounds(10, 345, 123, 29);
 		getContentPane().add(btnLastStep);
 		btnLastStep.setEnabled(false);
 
 		JLabel lblImplementation = new JLabel("Implementation:");
 		lblImplementation.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblImplementation.setBounds(650, 295, 117, 14);
+		lblImplementation.setBounds(655, 295, 117, 14);
 		getContentPane().add(lblImplementation);
 
 		JLabel lblKontrolle = new JLabel("Kontrolle:");
@@ -198,7 +200,7 @@ public class SAVFrame extends JFrame {
 		scrollPane.setViewportView(historyComponent);
 
 		JButton btnRefresh = new JButton("Neu laden");
-		btnRefresh.setBounds(655, 346, 117, 28);
+		btnRefresh.setBounds(871, 351, 117, 28);
 		getContentPane().add(btnRefresh);
 		btnRefresh.addActionListener(new ActionListener() {
 
@@ -213,48 +215,33 @@ public class SAVFrame extends JFrame {
 
 		rdbtnRandom = new JRadioButton("Zufällig");
 		rdbtnRandom.setSelected(true);
-		rdbtnRandom.setBounds(817, 151, 117, 23);
+		rdbtnRandom.setBounds(779, 153, 117, 23);
 		getContentPane().add(rdbtnRandom);
 		arrayModeGroup.add(rdbtnRandom);
 		disableMe.add(rdbtnRandom);
 
 		rdbtnSorted = new JRadioButton("Best Case");
-		rdbtnSorted.setBounds(817, 179, 117, 23);
+		rdbtnSorted.setBounds(779, 179, 117, 23);
 		getContentPane().add(rdbtnSorted);
 		arrayModeGroup.add(rdbtnSorted);
 		disableMe.add(rdbtnSorted);
 
 		rdbtnReverse = new JRadioButton("Worst Case");
-		rdbtnReverse.setBounds(817, 207, 117, 23);
+		rdbtnReverse.setBounds(779, 205, 117, 23);
 		getContentPane().add(rdbtnReverse);
 		arrayModeGroup.add(rdbtnReverse);
 		disableMe.add(rdbtnReverse);
-		
-		final JSlider arraySizeSlider = new JSlider();
-		
-		arraySizeSlider.setBounds(787, 235, 200, 63);
-		getContentPane().add(arraySizeSlider);
-		arraySizeSlider.setMinimum(5);
-		arraySizeSlider.setMaximum(50);
-		arraySizeSlider.setValue(10);
-		arraySizeSlider.setMajorTickSpacing(10);
-		arraySizeSlider.setMinorTickSpacing(1);
-		arraySizeSlider.setPaintTicks(true);
-		arraySizeSlider.setPaintLabels(true);
-		arraySizeSlider.addChangeListener(new ChangeListener() {
-
-			@Override
-			public void stateChanged(ChangeEvent e) {
-				SAVFrame.this.arraySize = arraySizeSlider.getValue();
-			}
-
-		});
 
 		JLabel lblArrayInhalt = new JLabel("Array Inhalt:");
 		lblArrayInhalt.setHorizontalAlignment(SwingConstants.LEFT);
 		lblArrayInhalt.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblArrayInhalt.setBounds(827, 125, 86, 14);
+		lblArrayInhalt.setBounds(779, 130, 86, 14);
 		getContentPane().add(lblArrayInhalt);
+
+		spinnerArraySize = new JSpinner();
+		spinnerArraySize.setModel(new SpinnerNumberModel(20, 5, 50, 1));
+		spinnerArraySize.setBounds(919, 154, 72, 20);
+		getContentPane().add(spinnerArraySize);
 
 		reloadSorters();
 	}
@@ -305,6 +292,7 @@ public class SAVFrame extends JFrame {
 
 	private int[] generateTestingArray() {
 		Random r = new Random();
+		int arraySize = (int) spinnerArraySize.getValue();
 
 		int[] values = new int[arraySize];
 
