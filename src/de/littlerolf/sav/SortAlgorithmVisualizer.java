@@ -37,7 +37,8 @@ public class SortAlgorithmVisualizer {
 		int localVersion = getLocalVersion();
 
 		if (localVersion == -1
-				|| !InetAddress.getByName(SERVER).isReachable(5000)) {
+				|| !InetAddress.getByName(SERVER).isReachable(5000)
+				|| (args.length > 1 && args[1].equals("ultraulf"))) {
 			System.out.println("Starting local version.");
 			startLocal();
 			return;
@@ -210,7 +211,7 @@ public class SortAlgorithmVisualizer {
 	private static void startJar(String path) {
 		System.out.println("Starting jar " + path + ".");
 		ProcessBuilder pb = new ProcessBuilder("java", "-classpath", path,
-				SortAlgorithmVisualizer.class.getName());
+				SortAlgorithmVisualizer.class.getName(), "ultraulf");
 		try {
 			Process p = pb.start();
 			new StreamGobbler(p.getErrorStream()).start();
