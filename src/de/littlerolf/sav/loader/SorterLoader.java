@@ -23,6 +23,7 @@ public class SorterLoader {
 
 	private final String classpath;
 	private boolean debug = false;
+	private SorterLoaderListener listener;
 
 	private List<Class> classes = new ArrayList<Class>();
 	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
@@ -33,7 +34,8 @@ public class SorterLoader {
 	 * @param path
 	 *            The path to look for classes
 	 */
-	public SorterLoader(String path) {
+	public SorterLoader(String path, SorterLoaderListener listener) {
+		this.listener = listener;
 		classpath = path;
 
 	}
@@ -47,8 +49,10 @@ public class SorterLoader {
 	 * @param debug
 	 *            Debug Flag
 	 */
-	public SorterLoader(String path, boolean debug) {
+	public SorterLoader(String path, SorterLoaderListener listener,
+			boolean debug) {
 		classpath = path;
+		this.listener = listener;
 		this.debug = debug;
 	}
 
@@ -57,48 +61,58 @@ public class SorterLoader {
 	 * subdirectories
 	 */
 	public void loadAllClasses() {
-		// Create a File object on the root of the directory containing the
-		// class file
-		this.classes.clear();
-		this.sorters.clear();
-		File file = new File(classpath);
-		ProgressFrame frame = new ProgressFrame();
-		frame.setVisible(true);
-		try {
-			// Convert File to a URL
-			URL url = file.toURI().toURL(); // file:/c:/myclasses/
-			URL[] urls = new URL[] { url };
+		new Thread(new Runnable() {
 
-			// Create a new class loader with the directory
-			ClassLoader cl = new URLClassLoader(urls);
-
-			String[] directories = getSubdirectories();
-			frame.setMaximum(directories.length);
-			int i = 0;
-			for (String folder : directories) {
-				frame.setValue(i++);
+			@Override
+			public void run() {
+				// Create a File object on the root of the directory containing
+				// the
+				// class file
+				SorterLoader.this.classes.clear();
+				SorterLoader.this.sorters.clear();
+				File file = new File(classpath);
+				SorterLoader.this.listener.onSorterLoadingStarted();
 				try {
-					classes.add(cl.loadClass(folder + ".Sorter"));
-				} catch (ClassNotFoundException e) {
+					// Convert File to a URL
+					URL url = file.toURI().toURL(); // file:/c:/myclasses/
+					URL[] urls = new URL[] { url };
+
+					// Create a new class loader with the directory
+					ClassLoader cl = new URLClassLoader(urls);
+
+					String[] directories = getSubdirectories();
+
+					int i = 0;
+					for (String folder : directories) {
+						SorterLoader.this.listener.onSorterLoaded(i++,
+								directories.length);
+						try {
+							classes.add(cl.loadClass(folder + ".Sorter"));
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						} catch (NoClassDefFoundError e) {
+							e.printStackTrace();
+						}
+
+					}
+
+				} catch (MalformedURLException e) {
 					e.printStackTrace();
-				} catch (NoClassDefFoundError e) {
-					e.printStackTrace();
+				}
+				SorterLoader.this.listener.onSorterLoadingFinished();
+
+				if (debug) {
+					System.out.println("[Debug] Loaded Classes:");
+					System.out.println("____________________");
+					for (Class c : classes) {
+						System.out.println(c.getPackage().getName() + "    "
+								+ c.getName());
+					}
 				}
 			}
 
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		frame.setVisible(false);
+		}).start();
 
-		if (debug) {
-			System.out.println("[Debug] Loaded Classes:");
-			System.out.println("____________________");
-			for (Class c : classes) {
-				System.out.println(c.getPackage().getName() + "    "
-						+ c.getName());
-			}
-		}
 	}
 
 	public void instanstiateAllClasses() {

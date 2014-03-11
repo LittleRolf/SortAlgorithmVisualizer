@@ -32,6 +32,7 @@ import javax.swing.event.ChangeListener;
 
 import de.littlerolf.sav.data.BaseSorter;
 import de.littlerolf.sav.loader.SorterLoader;
+import de.littlerolf.sav.loader.SorterLoaderListener;
 import de.littlerolf.sav.simulation.AlgorithmSimulator;
 import de.littlerolf.sav.simulation.SimulationListener;
 import de.littlerolf.sav.simulation.SimulationResult;
@@ -55,6 +56,7 @@ public class SAVFrame extends JFrame {
 	private JRadioButton rdbtnSorted;
 	private JRadioButton rdbtnReverse;
 	private JSpinner spinnerArraySize;
+	private JLabel lblArrayGre;
 
 	private SAVHistoryComponent historyComponent;
 	private int currentSpeed = 1500;
@@ -64,7 +66,8 @@ public class SAVFrame extends JFrame {
 	private List<JComponent> disableMe = new ArrayList<JComponent>();
 
 	private SorterLoader sorterLoader;
-	private JLabel lblArrayGre;
+
+	private String path;
 
 	public SAVFrame() {
 
@@ -177,7 +180,7 @@ public class SAVFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SAVFrame.this.reloadSorters();
+				SAVFrame.this.reloadSorters(path);
 			}
 		});
 		disableMe.add(btnRefresh);
@@ -246,9 +249,8 @@ public class SAVFrame extends JFrame {
 		folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnedValue = folderChooser.showOpenDialog(this);
 		if (returnedValue == JFileChooser.APPROVE_OPTION) {
-			this.sorterLoader = new SorterLoader(folderChooser
-					.getSelectedFile().getAbsolutePath());
-			reloadSorters();
+			path = folderChooser.getSelectedFile().getAbsolutePath();
+			reloadSorters(path);
 		} else {
 			JOptionPane.showMessageDialog(null, "Sheesh.", "Fail.",
 					JOptionPane.ERROR_MESSAGE);
@@ -322,15 +324,38 @@ public class SAVFrame extends JFrame {
 		return values;
 	}
 
-	private void reloadSorters() {
-		this.sorterLoader.loadAllClasses();
-		this.sorterLoader.instanstiateAllClasses();
-		this.setSorters(this.sorterLoader.getAllSorters());
+	private void reloadSorters(String path) {
+		final ProgressFrame f = new ProgressFrame();
 
-		refreshUI();
-		if (this.getSorters().size() > 0)
-			for (JComponent c : disableMe)
-				c.setEnabled(true);
+		this.sorterLoader = new SorterLoader(path, new SorterLoaderListener() {
+
+			@Override
+			public void onSorterLoadingStarted() {
+				f.setVisible(true);
+			}
+
+			@Override
+			public void onSorterLoaded(int progress, int max) {
+				f.setMaximum(max);
+				f.setValue(progress + 1);
+			}
+
+			@Override
+			public void onSorterLoadingFinished() {
+				f.setVisible(false);
+				f.dispose();
+				SAVFrame.this.sorterLoader.instanstiateAllClasses();
+				SAVFrame.this.setSorters(SAVFrame.this.sorterLoader
+						.getAllSorters());
+
+				refreshUI();
+				if (SAVFrame.this.getSorters().size() > 0)
+					for (JComponent c : disableMe)
+						c.setEnabled(true);
+			}
+		});
+		this.sorterLoader.loadAllClasses();
+
 	}
 
 	private void refreshUI() {
