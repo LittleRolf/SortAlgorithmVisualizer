@@ -5,5 +5,5 @@ public interface SimulationListener {
 
 	public void onSimulationProgress(int progress, int max);
 
-	public void onSimulationFinished(double averageSpeed, int[] sortedArray);
+	public void onSimulationFinished(SimulationResult result);
 }

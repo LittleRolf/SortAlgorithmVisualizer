@@ -45,7 +45,13 @@ public class AlgorithmSimulator implements Runnable {
 			averageSpeed += benchmarkResults[i];
 		averageSpeed /= benchmarkResults.length;
 
-		listener.onSimulationFinished(averageSpeed, sortedArray);
+		SimulationResult result = new SimulationResult();
+		result.averageSpeed = averageSpeed;
+		result.sortedArray = sortedArray.clone();
+		result.sorter = sorter;
+		result.totalSteps = sorter.getHistory().size();
+
+		listener.onSimulationFinished(result);
 	}
 
 }

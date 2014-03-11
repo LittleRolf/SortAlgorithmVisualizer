@@ -9,7 +9,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -22,7 +21,9 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -31,8 +32,7 @@ import de.littlerolf.sav.data.BaseSorter;
 import de.littlerolf.sav.loader.SorterLoader;
 import de.littlerolf.sav.simulation.AlgorithmSimulator;
 import de.littlerolf.sav.simulation.SimulationListener;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import de.littlerolf.sav.simulation.SimulationResult;
 
 public class SAVFrame extends JFrame {
 	/**
@@ -46,9 +46,7 @@ public class SAVFrame extends JFrame {
 	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
 
 	private JComboBox sorterComboBox;
-	private JLabel lblStepAmount;
 	private JLabel lblCurrentStep;
-	private JLabel lblSpeed;
 	private JButton btnNextStep;
 	private JButton btnLastStep;
 	private JRadioButton rdbtnRandom;
@@ -64,6 +62,7 @@ public class SAVFrame extends JFrame {
 	private List<JComponent> disableMe = new ArrayList<JComponent>();
 
 	private SorterLoader sorterLoader;
+	private JLabel lblArrayGre;
 
 	public SAVFrame(String path) {
 		sorterLoader = new SorterLoader(path);
@@ -114,7 +113,7 @@ public class SAVFrame extends JFrame {
 
 		JLabel lblGeschwindigkeit = new JLabel("Geschwindigkeit:");
 		lblGeschwindigkeit.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblGeschwindigkeit.setBounds(263, 295, 380, 14);
+		lblGeschwindigkeit.setBounds(263, 295, 188, 14);
 		getContentPane().add(lblGeschwindigkeit);
 
 		final JToggleButton chkPause = new JToggleButton("Pause");
@@ -159,41 +158,12 @@ public class SAVFrame extends JFrame {
 		lblKontrolle.setBounds(10, 295, 89, 14);
 		getContentPane().add(lblKontrolle);
 
-		JLabel lblSchritte = new JLabel("Schritte:");
-		lblSchritte.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblSchritte.setBounds(817, 63, 90, 14);
-		getContentPane().add(lblSchritte);
-
-		lblStepAmount = new JLabel("0");
-		lblStepAmount.setBounds(919, 63, 69, 14);
-		getContentPane().add(lblStepAmount);
-
-		JLabel lblAktuellerSchritte = new JLabel("Aktueller Schritt:");
-		lblAktuellerSchritte.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblAktuellerSchritte.setBounds(779, 37, 128, 14);
-		getContentPane().add(lblAktuellerSchritte);
-
-		lblCurrentStep = new JLabel("0");
-		lblCurrentStep.setBounds(919, 37, 69, 14);
+		lblCurrentStep = new JLabel("Aktueller Schritt: 42/42");
+		lblCurrentStep.setBounds(461, 295, 182, 14);
 		getContentPane().add(lblCurrentStep);
 
-		JLabel lblStatistik = new JLabel("Statistik:");
-		lblStatistik.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblStatistik.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblStatistik.setBounds(779, 11, 128, 14);
-		getContentPane().add(lblStatistik);
-
-		JLabel lblGeschwindigkeit_1 = new JLabel("Ø Geschwindigkeit:");
-		lblGeschwindigkeit_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblGeschwindigkeit_1.setBounds(779, 89, 128, 14);
-		getContentPane().add(lblGeschwindigkeit_1);
-
-		lblSpeed = new JLabel("0s");
-		lblSpeed.setBounds(919, 89, 69, 14);
-		getContentPane().add(lblSpeed);
-
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 11, 757, 272);
+		scrollPane.setBounds(10, 11, 882, 272);
 		getContentPane().add(scrollPane);
 
 		historyComponent = new SAVHistoryComponent();
@@ -214,20 +184,23 @@ public class SAVFrame extends JFrame {
 		ButtonGroup arrayModeGroup = new ButtonGroup();
 
 		rdbtnRandom = new JRadioButton("Zufällig");
+		rdbtnRandom.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		rdbtnRandom.setSelected(true);
-		rdbtnRandom.setBounds(779, 153, 117, 23);
+		rdbtnRandom.setBounds(902, 34, 86, 23);
 		getContentPane().add(rdbtnRandom);
 		arrayModeGroup.add(rdbtnRandom);
 		disableMe.add(rdbtnRandom);
 
 		rdbtnSorted = new JRadioButton("Best Case");
-		rdbtnSorted.setBounds(779, 179, 117, 23);
+		rdbtnSorted.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		rdbtnSorted.setBounds(902, 60, 86, 23);
 		getContentPane().add(rdbtnSorted);
 		arrayModeGroup.add(rdbtnSorted);
 		disableMe.add(rdbtnSorted);
 
 		rdbtnReverse = new JRadioButton("Worst Case");
-		rdbtnReverse.setBounds(779, 205, 117, 23);
+		rdbtnReverse.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		rdbtnReverse.setBounds(902, 86, 86, 23);
 		getContentPane().add(rdbtnReverse);
 		arrayModeGroup.add(rdbtnReverse);
 		disableMe.add(rdbtnReverse);
@@ -235,14 +208,20 @@ public class SAVFrame extends JFrame {
 		JLabel lblArrayInhalt = new JLabel("Array Inhalt:");
 		lblArrayInhalt.setHorizontalAlignment(SwingConstants.LEFT);
 		lblArrayInhalt.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblArrayInhalt.setBounds(779, 130, 86, 14);
+		lblArrayInhalt.setBounds(902, 11, 72, 14);
 		getContentPane().add(lblArrayInhalt);
 
 		spinnerArraySize = new JSpinner();
 		spinnerArraySize.setModel(new SpinnerNumberModel(20, 5, 50, 1));
-		spinnerArraySize.setBounds(919, 154, 72, 20);
+		spinnerArraySize.setBounds(902, 144, 86, 20);
 		getContentPane().add(spinnerArraySize);
+		lblCurrentStep.setText("");
 
+		lblArrayGre = new JLabel("Array Größe:");
+		lblArrayGre.setHorizontalAlignment(SwingConstants.LEFT);
+		lblArrayGre.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblArrayGre.setBounds(902, 119, 86, 14);
+		getContentPane().add(lblArrayGre);
 		reloadSorters();
 	}
 
@@ -267,9 +246,10 @@ public class SAVFrame extends JFrame {
 					}
 
 					@Override
-					public void onSimulationFinished(double averageSpeed,
-							int[] sortedArray) {
-						lblSpeed.setText(averageSpeed + "µs");
+					public void onSimulationFinished(SimulationResult result) {
+						SimulationResultFrame f = new SimulationResultFrame(
+								result, SAVFrame.this);
+						f.setVisible(true);
 						historyComponent.getHistoryItems().clear();
 						historyComponent.getHistoryItems().addAll(
 								sorter.getHistory());
@@ -369,8 +349,8 @@ public class SAVFrame extends JFrame {
 	}
 
 	private void onSteppingProgress(int progress, int max) {
-		lblStepAmount.setText(max + "");
-		lblCurrentStep.setText(progress + 1 + "");
+		lblCurrentStep.setText("Aktueller Schritt: " + (progress + 1) + " / "
+				+ max);
 	}
 
 	public void doSimulationNextStep() {
