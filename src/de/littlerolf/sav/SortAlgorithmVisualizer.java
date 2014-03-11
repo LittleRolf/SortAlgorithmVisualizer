@@ -243,25 +243,9 @@ public class SortAlgorithmVisualizer {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		}
-		JOptionPane
-				.showMessageDialog(
-						null,
-						"Yo. Also. Gleich kommt so ein Ordnerauswahlfenster.\n"
-								+ "Da musst du dann mal eben den Ordner auswählen, in dessen Unterordnern deine .class-Dateien liegen.\n"
-								+ "Alles normal.");
-		JFileChooser folderChooser = new JFileChooser();
-		folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		JFrame f = new JFrame();
-		f.setVisible(true);
-		int returnedValue = folderChooser.showOpenDialog(f);
-		f.dispose();
-		if (returnedValue == JFileChooser.APPROVE_OPTION) {
-			new SAVFrame(folderChooser.getSelectedFile().getAbsolutePath())
-					.setVisible(true);
-		} else {
-			JOptionPane.showMessageDialog(null, "Sheesh.", "Fail.",
-					JOptionPane.ERROR_MESSAGE);
-		}
+
+		new SAVFrame().setVisible(true);
+
 	}
 
 	private static class StreamGobbler extends Thread {

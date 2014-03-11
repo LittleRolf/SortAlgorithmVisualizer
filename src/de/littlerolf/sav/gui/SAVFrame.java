@@ -16,8 +16,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
@@ -64,8 +66,7 @@ public class SAVFrame extends JFrame {
 	private SorterLoader sorterLoader;
 	private JLabel lblArrayGre;
 
-	public SAVFrame(String path) {
-		sorterLoader = new SorterLoader(path);
+	public SAVFrame() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
@@ -170,7 +171,7 @@ public class SAVFrame extends JFrame {
 		scrollPane.setViewportView(historyComponent);
 
 		JButton btnRefresh = new JButton("Neu laden");
-		btnRefresh.setBounds(871, 351, 117, 28);
+		btnRefresh.setBounds(871, 351, 117, 23);
 		getContentPane().add(btnRefresh);
 		btnRefresh.addActionListener(new ActionListener() {
 
@@ -222,7 +223,36 @@ public class SAVFrame extends JFrame {
 		lblArrayGre.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblArrayGre.setBounds(902, 119, 86, 14);
 		getContentPane().add(lblArrayGre);
-		reloadSorters();
+
+		JButton btnOrdnerAuswhlen = new JButton("Ordner auswählen");
+		btnOrdnerAuswhlen.setBounds(655, 351, 158, 23);
+		getContentPane().add(btnOrdnerAuswhlen);
+		btnOrdnerAuswhlen.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SAVFrame.this.onSelectFolderPressed();
+			}
+
+		});
+
+		for (JComponent c : disableMe)
+			c.setEnabled(false);
+
+	}
+
+	private void onSelectFolderPressed() {
+		JFileChooser folderChooser = new JFileChooser();
+		folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnedValue = folderChooser.showOpenDialog(this);
+		if (returnedValue == JFileChooser.APPROVE_OPTION) {
+			this.sorterLoader = new SorterLoader(folderChooser
+					.getSelectedFile().getAbsolutePath());
+			reloadSorters();
+		} else {
+			JOptionPane.showMessageDialog(null, "Sheesh.", "Fail.",
+					JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	private void onStartSimulationButtonPressed() {
@@ -298,6 +328,9 @@ public class SAVFrame extends JFrame {
 		this.setSorters(this.sorterLoader.getAllSorters());
 
 		refreshUI();
+		if (this.getSorters().size() > 0)
+			for (JComponent c : disableMe)
+				c.setEnabled(true);
 	}
 
 	private void refreshUI() {
