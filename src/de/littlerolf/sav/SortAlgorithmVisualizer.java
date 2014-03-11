@@ -7,19 +7,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -32,37 +31,28 @@ public class SortAlgorithmVisualizer {
 			System.getProperty("user.home") + File.separator + ".sav"
 					+ File.separator + "SAV.jar");
 
-	public static void main(String[] args) {
-		int remoteVersion = getRemoteVersion();
+	public static void main(String[] args) throws UnknownHostException,
+			IOException {
 		int localVersion = getLocalVersion();
-		int downloadedVersion = getDownloadedJarVersion();
 
-		if (localVersion == -1) {
+		if (localVersion == -1
+				|| !InetAddress.getByName(SERVER_URL).isReachable(5000)) {
+			System.out.println("Starting local version.");
 			startLocal();
-		} else {
-			if (remoteVersion > downloadedVersion
-					&& remoteVersion > localVersion) {
-				System.out.println("Starting remote version.");
-				downloadAndStartRemoteJar();
-			} else if (downloadedVersion > remoteVersion
-					&& downloadedVersion > localVersion) {
-				System.out.println("Starting cached version.");
-				startJar(DOWNLOADED_FILE.getAbsolutePath());
-			} else if (remoteVersion == downloadedVersion
-					&& downloadedVersion > localVersion) {
-				startJar(DOWNLOADED_FILE.getAbsolutePath());
-			} else {
-
-				System.out.println("Starting local version.");
-				startLocal();
-			}
+			return;
 		}
 
-		/*
-		 * if (getLocalVersion() > -1) { if (isRemoteNewer()) {
-		 * startJar(downloadRemoteJar().getAbsolutePath()); } else {
-		 * startLocal(); } } else { startLocal(); }
-		 */
+		int remoteVersion = getRemoteVersion();
+		int downloadedVersion = getDownloadedJarVersion();
+
+		if (remoteVersion > downloadedVersion) {
+			System.out.println("Starting remote version.");
+			downloadAndStartRemoteJar();
+		} else {
+			System.out.println("Starting cached version.");
+			startJar(DOWNLOADED_FILE.getAbsolutePath());
+		}
+
 	}
 
 	private static void downloadAndStartRemoteJar() {
