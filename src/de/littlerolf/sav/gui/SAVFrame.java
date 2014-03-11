@@ -302,7 +302,7 @@ public class SAVFrame extends JFrame {
 
 	private int[] generateTestingArray() {
 		Random r = new Random();
-		int arraySize = (int) spinnerArraySize.getValue();
+		int arraySize = (Integer) spinnerArraySize.getValue();
 
 		int[] values = new int[arraySize];
 
