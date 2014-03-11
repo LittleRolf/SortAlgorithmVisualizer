@@ -26,6 +26,7 @@ import de.littlerolf.sav.gui.ProgressFrame;
 import de.littlerolf.sav.gui.SAVFrame;
 
 public class SortAlgorithmVisualizer {
+	private static final String SERVER = "github.io";
 	private static final String SERVER_URL = "http://littlerolf.github.io/SortAlgorithmVisualizer/";
 	private static final File DOWNLOADED_FILE = new File(
 			System.getProperty("user.home") + File.separator + ".sav"
@@ -36,7 +37,7 @@ public class SortAlgorithmVisualizer {
 		int localVersion = getLocalVersion();
 
 		if (localVersion == -1
-				|| !InetAddress.getByName(SERVER_URL).isReachable(5000)) {
+				|| !InetAddress.getByName(SERVER).isReachable(5000)) {
 			System.out.println("Starting local version.");
 			startLocal();
 			return;
