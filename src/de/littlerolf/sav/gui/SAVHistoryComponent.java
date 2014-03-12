@@ -4,6 +4,8 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 import de.littlerolf.sav.data.HistoryItem;
+import de.littlerolf.sav.simulation.ArrayDiff;
 
 public class SAVHistoryComponent extends JComponent {
 
@@ -71,7 +74,7 @@ public class SAVHistoryComponent extends JComponent {
 
 		repaint();
 	}
-	
+
 	public void doPreviousStep() {
 		currentIndex--;
 		if (currentIndex < 0)
@@ -132,6 +135,39 @@ public class SAVHistoryComponent extends JComponent {
 
 			g.drawImage(cardImage, x, y, imgWidth, imgHeight, null);
 			i++;
+		}
+		if (currentIndex > 0) {
+			int[] arrayDiff = ArrayDiff.getArrayDiff(
+					getHistoryItems().get(currentIndex - 1).values,
+					currentItem.values);
+			if (arrayDiff == null)
+				return;
+			for (int j = 0; j < arrayDiff.length / 2; j += 2) {
+				int from = arrayDiff[j];
+				int to = arrayDiff[j + 1];
+
+				int y = height / 2 - cardImages[0].getHeight() / 2 / 2;
+				int xFrom = (width / 4) + (from * diff)
+						- cardImages[0].getWidth() / 8 + diff / 2;
+				int xTo = (width / 4) + (to * diff) - cardImages[0].getWidth()
+						/ 8 + diff / 2;
+				Point p1 = new Point(xFrom, y);
+				Point p2 = new Point(xTo, y);
+
+				double angle = Math.atan2(0, xTo - xFrom);
+				int diameter = (int) Math.round(p1.distance(p2));
+				g.setStroke(new BasicStroke(1));
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.translate(p1.x, p1.y);
+				g2d.rotate(angle);
+				g2d.drawArc(0, -25, diameter, 50, 0, 180);
+				g2d.fill(new Polygon(new int[] { 0, 5, -5 }, new int[] { 0, -5,
+						-5 }, 3));
+				g2d.translate(-p1.x, -p1.y);
+				g2d.translate(p2.x, p2.y);
+				g2d.fill(new Polygon(new int[] { 0, 5, -5 }, new int[] { 0, -5,
+						-5 }, 3));
+			}
 		}
 	}
 
