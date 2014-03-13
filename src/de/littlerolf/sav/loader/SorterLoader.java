@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import de.littlerolf.sav.data.BaseSorter;
-import de.littlerolf.sav.gui.ProgressFrame;
 
 /**
  * The Main Class of the Loader module, used for loading and accessing the
@@ -25,7 +24,7 @@ public class SorterLoader {
 	private boolean debug = false;
 	private SorterLoaderListener listener;
 
-	private List<Class> classes = new ArrayList<Class>();
+	private List<Class<BaseSorter>> classes = new ArrayList<Class<BaseSorter>>();
 	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
 
 	/**
@@ -60,6 +59,8 @@ public class SorterLoader {
 	 * Loads all classes named 'Sorter' from the set folder from all the
 	 * subdirectories
 	 */
+	@SuppressWarnings("unchecked")
+	// We can safely ignore the warnings because it's being checked
 	public void loadAllClasses() {
 		new Thread(new Runnable() {
 
@@ -78,6 +79,8 @@ public class SorterLoader {
 					URL[] urls = new URL[] { url };
 
 					// Create a new class loader with the directory
+					@SuppressWarnings("resource")
+					// Bug in JDK.
 					ClassLoader cl = new URLClassLoader(urls);
 
 					String[] directories = getSubdirectories();
@@ -87,13 +90,17 @@ public class SorterLoader {
 						SorterLoader.this.listener.onSorterLoaded(i++,
 								directories.length);
 						try {
-							classes.add(cl.loadClass(folder + ".Sorter"));
+							Class<?> clazz = cl.loadClass(folder + ".Sorter");
+
+							if (clazz.isAssignableFrom(BaseSorter.class)) {
+
+								classes.add((Class<BaseSorter>) clazz);
+							}
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
 						} catch (NoClassDefFoundError e) {
 							e.printStackTrace();
 						}
-
 					}
 
 				} catch (MalformedURLException e) {
@@ -104,7 +111,7 @@ public class SorterLoader {
 				if (debug) {
 					System.out.println("[Debug] Loaded Classes:");
 					System.out.println("____________________");
-					for (Class c : classes) {
+					for (Class<BaseSorter> c : classes) {
 						System.out.println(c.getPackage().getName() + "    "
 								+ c.getName());
 					}
@@ -122,7 +129,7 @@ public class SorterLoader {
 			}
 			return;
 		}
-		for (Class c : classes) {
+		for (Class<BaseSorter> c : classes) {
 			try {
 				sorters.add((BaseSorter) c.newInstance());
 			} catch (InstantiationException e) {
@@ -164,8 +171,8 @@ public class SorterLoader {
 	 *            package name to search for
 	 * @return The found Class or null
 	 */
-	public Class getSorterClassByPackageName(String packageName) {
-		for (Class c : classes) {
+	public Class<BaseSorter> getSorterClassByPackageName(String packageName) {
+		for (Class<BaseSorter> c : classes) {
 			if (c.getPackage().getName().equals(packageName)) {
 				if (debug) {
 					System.out.println("Found loaded class for package name: "

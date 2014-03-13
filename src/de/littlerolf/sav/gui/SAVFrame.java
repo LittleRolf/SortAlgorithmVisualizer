@@ -48,6 +48,8 @@ public class SAVFrame extends JFrame {
 
 	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
 
+	@SuppressWarnings("rawtypes")
+	// Compatability to JDK6
 	private JComboBox sorterComboBox;
 	private JLabel lblCurrentStep;
 	private JButton btnNextStep;
@@ -69,6 +71,7 @@ public class SAVFrame extends JFrame {
 
 	private String path;
 
+	@SuppressWarnings("rawtypes")
 	public SAVFrame() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -358,6 +361,8 @@ public class SAVFrame extends JFrame {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	// Compatability with JDK6
 	private void refreshUI() {
 		// Refresh ComboBox
 		this.sorterComboBox.removeAllItems();
