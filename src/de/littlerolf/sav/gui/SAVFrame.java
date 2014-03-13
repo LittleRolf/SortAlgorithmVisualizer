@@ -74,7 +74,7 @@ public class SAVFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		setTitle("SortAlgorithmVisualizer");
-		setSize(1007, 419);
+		setSize(1022, 419);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
 				/ 2 - this.getSize().height / 2);
@@ -174,7 +174,7 @@ public class SAVFrame extends JFrame {
 		scrollPane.setViewportView(historyComponent);
 
 		JButton btnRefresh = new JButton("Neu laden");
-		btnRefresh.setBounds(871, 351, 117, 23);
+		btnRefresh.setBounds(871, 351, 117, 28);
 		getContentPane().add(btnRefresh);
 		btnRefresh.addActionListener(new ActionListener() {
 
@@ -197,14 +197,14 @@ public class SAVFrame extends JFrame {
 
 		rdbtnSorted = new JRadioButton("Best Case");
 		rdbtnSorted.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		rdbtnSorted.setBounds(902, 60, 86, 23);
+		rdbtnSorted.setBounds(902, 60, 114, 23);
 		getContentPane().add(rdbtnSorted);
 		arrayModeGroup.add(rdbtnSorted);
 		disableMe.add(rdbtnSorted);
 
 		rdbtnReverse = new JRadioButton("Worst Case");
 		rdbtnReverse.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		rdbtnReverse.setBounds(902, 86, 86, 23);
+		rdbtnReverse.setBounds(902, 86, 114, 23);
 		getContentPane().add(rdbtnReverse);
 		arrayModeGroup.add(rdbtnReverse);
 		disableMe.add(rdbtnReverse);
@@ -217,7 +217,7 @@ public class SAVFrame extends JFrame {
 
 		spinnerArraySize = new JSpinner();
 		spinnerArraySize.setModel(new SpinnerNumberModel(20, 5, 50, 1));
-		spinnerArraySize.setBounds(902, 144, 86, 20);
+		spinnerArraySize.setBounds(902, 144, 114, 28);
 		getContentPane().add(spinnerArraySize);
 		lblCurrentStep.setText("");
 
@@ -228,7 +228,7 @@ public class SAVFrame extends JFrame {
 		getContentPane().add(lblArrayGre);
 
 		JButton btnOrdnerAuswhlen = new JButton("Ordner auswählen");
-		btnOrdnerAuswhlen.setBounds(655, 351, 158, 23);
+		btnOrdnerAuswhlen.setBounds(655, 351, 158, 28);
 		getContentPane().add(btnOrdnerAuswhlen);
 		btnOrdnerAuswhlen.addActionListener(new ActionListener() {
 
