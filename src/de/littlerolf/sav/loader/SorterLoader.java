@@ -2,12 +2,22 @@ package de.littlerolf.sav.loader;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticListener;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaCompiler.CompilationTask;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 
 import de.littlerolf.sav.data.BaseSorter;
 
@@ -24,7 +34,7 @@ public class SorterLoader {
 	private boolean debug = false;
 	private SorterLoaderListener listener;
 
-	private List<Class<BaseSorter>> classes = new ArrayList<Class<BaseSorter>>();
+	private List<Class> classes = new ArrayList<Class>();
 	private List<BaseSorter> sorters = new ArrayList<BaseSorter>();
 
 	/**
@@ -53,6 +63,49 @@ public class SorterLoader {
 		classpath = path;
 		this.listener = listener;
 		this.debug = debug;
+	}
+
+	public void compileAllClasses() {
+		String[] directories = getSubdirectories();
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
+				null, null, null);
+		for (final String d : directories) {
+			File sourceFile = new File(classpath + File.separator + d
+					+ File.separator + "Sorter.java");
+			if (!sourceFile.exists())
+				continue;
+			File targetFile = new File(classpath + File.separator + d
+					+ File.separator + "Sorter.class");
+			if (targetFile.exists())
+				continue;
+			Iterable<? extends JavaFileObject> units;
+			units = fileManager.getJavaFileObjectsFromFiles(Arrays
+					.asList(sourceFile));
+			CompilationTask task = compiler.getTask(null, fileManager,
+					new DiagnosticListener<Object>() {
+
+						@Override
+						public void report(Diagnostic<?> diagnostic) {
+							JOptionPane.showMessageDialog(null,
+									diagnostic.toString(), "Fehler in Klasse "
+											+ d, JOptionPane.ERROR_MESSAGE);
+						}
+					}, null, null, units);
+
+			if (!task.call()) {
+				System.err.println("Couldn't compile class " + d + ".");
+			} else {
+				System.out.println("Compiled " + d);
+			}
+			try {
+				fileManager.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+		System.out.println("Finished compiling.");
 	}
 
 	/**
@@ -92,10 +145,7 @@ public class SorterLoader {
 						try {
 							Class<?> clazz = cl.loadClass(folder + ".Sorter");
 
-							if (clazz.isAssignableFrom(BaseSorter.class)) {
-
-								classes.add((Class<BaseSorter>) clazz);
-							}
+							classes.add(clazz);
 						} catch (ClassNotFoundException e) {
 							e.printStackTrace();
 						} catch (NoClassDefFoundError e) {

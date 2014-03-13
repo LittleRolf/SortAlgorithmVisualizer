@@ -357,6 +357,7 @@ public class SAVFrame extends JFrame {
 						c.setEnabled(true);
 			}
 		});
+		this.sorterLoader.compileAllClasses();
 		this.sorterLoader.loadAllClasses();
 
 	}
