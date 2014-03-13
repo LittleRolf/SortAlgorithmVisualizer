@@ -34,8 +34,9 @@ public class AlgorithmSimulator implements Runnable {
 
 			// Wohoo, sorting!
 			long start = System.nanoTime();
-			sorter.sortArray(sortedArray);
+			int[] result = sorter.sortArray(sortedArray);
 			benchmarkResults[i] = (int) ((System.nanoTime() - start) / 1000);
+			sorter.saveHistory(result);
 			listener.onSimulationProgress(i, simulations);
 		}
 

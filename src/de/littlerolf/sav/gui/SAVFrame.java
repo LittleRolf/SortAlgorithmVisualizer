@@ -409,6 +409,7 @@ public class SAVFrame extends JFrame {
 
 		for (JComponent c : disableMe)
 			c.setEnabled(true);
+		System.out.println("Finished");
 
 	}
 

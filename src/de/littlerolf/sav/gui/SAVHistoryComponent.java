@@ -84,7 +84,7 @@ public class SAVHistoryComponent extends JComponent {
 	}
 
 	public boolean isSimulationEndReached() {
-		return currentIndex >= historyItems.size() - 1;
+		return currentIndex + 1 >= historyItems.size();
 	}
 
 	public int getCurrentStep() {
@@ -167,6 +167,7 @@ public class SAVHistoryComponent extends JComponent {
 				g2d.translate(p2.x, p2.y);
 				g2d.fill(new Polygon(new int[] { 0, 5, -5 }, new int[] { 0, -5,
 						-5 }, 3));
+				g.translate(-p2.x, -p2.y);
 			}
 		}
 	}
