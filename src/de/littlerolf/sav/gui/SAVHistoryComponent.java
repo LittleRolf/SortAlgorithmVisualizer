@@ -130,8 +130,10 @@ public class SAVHistoryComponent extends JComponent {
 
 			g.setStroke(new BasicStroke(3));
 
-			if (i == currentItem.index)
-				g.drawRect(x, y, imgWidth, imgHeight);
+			for(int cardIndex = 0; cardIndex < currentItem.index.length; cardIndex++) {
+				if (i == currentItem.index[cardIndex])
+					g.drawRect(x, y, imgWidth, imgHeight);
+			}
 
 			g.drawImage(cardImage, x, y, imgWidth, imgHeight, null);
 			i++;

@@ -66,6 +66,7 @@ public class SorterLoader {
 	}
 
 	public void compileAllClasses() {
+		try {
 		String[] directories = getSubdirectories();
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
@@ -106,6 +107,10 @@ public class SorterLoader {
 
 		}
 		System.out.println("Finished compiling.");
+	} catch(Exception e) {
+		e.printStackTrace();
+		
+	}
 	}
 
 	/**
