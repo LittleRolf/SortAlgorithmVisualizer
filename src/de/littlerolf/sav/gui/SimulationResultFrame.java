@@ -17,6 +17,7 @@ public class SimulationResultFrame extends JDialog {
 		setTitle("Simulationsergebnis");
 		getContentPane().setLayout(null);
 		setSize(415, 164);
+		setLocationRelativeTo(parent);
 
 		JLabel lblAlgorithmus = new JLabel("Algorithmus:");
 		lblAlgorithmus.setHorizontalAlignment(SwingConstants.RIGHT);

@@ -379,7 +379,7 @@ public class SAVFrame extends JFrame {
 	}
 
 	@SuppressWarnings("unchecked")
-	// Compatability with JDK6
+	// Compiaäöjosftability with JDK6
 	private void refreshUI() {
 		// Refresh ComboBox
 		this.sorterComboBox.removeAllItems();

@@ -67,50 +67,51 @@ public class SorterLoader {
 
 	public void compileAllClasses() {
 		try {
-		String[] directories = getSubdirectories();
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
-				null, null, null);
-		for (final String d : directories) {
-			File sourceFile = new File(classpath + File.separator + d
-					+ File.separator + "Sorter.java");
-			if (!sourceFile.exists())
-				continue;
-			File targetFile = new File(classpath + File.separator + d
-					+ File.separator + "Sorter.class");
-			if (targetFile.exists())
-				continue;
-			Iterable<? extends JavaFileObject> units;
-			units = fileManager.getJavaFileObjectsFromFiles(Arrays
-					.asList(sourceFile));
-			CompilationTask task = compiler.getTask(null, fileManager,
-					new DiagnosticListener<Object>() {
+			String[] directories = getSubdirectories();
+			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			StandardJavaFileManager fileManager = compiler
+					.getStandardFileManager(null, null, null);
+			for (final String d : directories) {
+				File sourceFile = new File(classpath + File.separator + d
+						+ File.separator + "Sorter.java");
+				if (!sourceFile.exists())
+					continue;
+				File targetFile = new File(classpath + File.separator + d
+						+ File.separator + "Sorter.class");
+				if (targetFile.exists())
+					continue;
+				Iterable<? extends JavaFileObject> units;
+				units = fileManager.getJavaFileObjectsFromFiles(Arrays
+						.asList(sourceFile));
+				CompilationTask task = compiler.getTask(null, fileManager,
+						new DiagnosticListener<Object>() {
 
-						@Override
-						public void report(Diagnostic<?> diagnostic) {
-							JOptionPane.showMessageDialog(null,
-									diagnostic.toString(), "Fehler in Klasse "
-											+ d, JOptionPane.ERROR_MESSAGE);
-						}
-					}, null, null, units);
+							@Override
+							public void report(Diagnostic<?> diagnostic) {
+								JOptionPane.showMessageDialog(null,
+										diagnostic.toString(),
+										"Fehler in Klasse " + d,
+										JOptionPane.ERROR_MESSAGE);
+							}
+						}, null, null, units);
 
-			if (!task.call()) {
-				System.err.println("Couldn't compile class " + d + ".");
-			} else {
-				System.out.println("Compiled " + d);
+				if (!task.call()) {
+					System.err.println("Couldn't compile class " + d + ".");
+				} else {
+					System.out.println("Compiled " + d);
+				}
+				try {
+					fileManager.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 			}
-			try {
-				fileManager.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			System.out.println("Finished compiling.");
+		} catch (Exception e) {
+			e.printStackTrace();
 
 		}
-		System.out.println("Finished compiling.");
-	} catch(Exception e) {
-		e.printStackTrace();
-		
-	}
 	}
 
 	/**
