@@ -28,16 +28,21 @@ public class AlgorithmSimulator implements Runnable {
 
 		listener.onSimulationStarted();
 
-		for (int i = 0; i < benchmarkResults.length; i++) {
-			sorter.getHistory().clear();
-			sortedArray = inputArray.clone();
+		try {
+			for (int i = 0; i < benchmarkResults.length; i++) {
+				sorter.getHistory().clear();
+				sortedArray = inputArray.clone();
 
-			// Wohoo, sorting!
-			long start = System.nanoTime();
-			int[] result = sorter.sortArray(sortedArray);
-			benchmarkResults[i] = (int) ((System.nanoTime() - start) / 1000);
-			sorter.saveHistory(result);
-			listener.onSimulationProgress(i, simulations);
+				// Wohoo, sorting!
+				long start = System.nanoTime();
+				int[] result = sorter.sortArray(sortedArray);
+				benchmarkResults[i] = (int) ((System.nanoTime() - start) / 1000);
+				sorter.saveHistory(result);
+				listener.onSimulationProgress(i, simulations);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			listener.onSimulationFailed();
 		}
 
 		double averageSpeed = 0;

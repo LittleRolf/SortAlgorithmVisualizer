@@ -300,6 +300,22 @@ public class SAVFrame extends JFrame {
 						pFrame.setVisible(false);
 						pFrame.dispose();
 					}
+
+					@Override
+					public void onSimulationFailed() {
+
+						historyComponent.getHistoryItems().clear();
+						historyComponent.repaint();
+						for (JComponent c : disableMe)
+							c.setEnabled(false);
+
+						pFrame.setVisible(false);
+						pFrame.dispose();
+
+						JOptionPane.showMessageDialog(SAVFrame.this,
+								"Der Algorithmus hat einen Fehler...", "Tja.",
+								JOptionPane.ERROR_MESSAGE);
+					}
 				});
 		sim.kickOffSimulation();
 

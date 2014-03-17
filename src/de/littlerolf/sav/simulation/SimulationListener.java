@@ -6,4 +6,6 @@ public interface SimulationListener {
 	public void onSimulationProgress(int progress, int max);
 
 	public void onSimulationFinished(SimulationResult result);
+	
+	public void onSimulationFailed();
 }

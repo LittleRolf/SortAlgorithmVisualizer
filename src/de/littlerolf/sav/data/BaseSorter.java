@@ -17,6 +17,13 @@ public abstract class BaseSorter {
 		history.add(i);
 	}
 
+	public void saveHistory(int[] values, int index) {
+		HistoryItem i = new HistoryItem();
+		i.values = values.clone();
+		i.index = new int[] { index };
+		history.add(i);
+	}
+
 	public void saveHistory(int[] values, int... index) {
 		HistoryItem i = new HistoryItem();
 		i.values = values.clone();
